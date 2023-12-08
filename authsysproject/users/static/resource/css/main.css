@@ -1,0 +1,136 @@
+#login-box
+{
+    box-shadow: 0 0 5px rgba(0,0,0,.5);
+}
+.container
+{
+    margin-top: 20px;
+}
+.multistep-container
+{
+    margin: 10px;
+}
+.multistep-container .active-button
+{
+    display: table;
+    margin: auto;
+    padding-left: 0;
+    overflow: hidden;
+}
+.multistep-container .active-button li
+{
+    display: inline-block;
+    width: 80px;
+}
+.multistep-container .active-button li .round-btn
+{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    display: block;
+    color: #000;
+    text-align: center;
+    font-family: 'poppins';
+    font-weight: 500;
+    line-height: 30px;
+    max-width: 100%;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.multistep-container .active-button li.active .round-btn
+{
+    background-color: blue;
+    color: white;
+}
+.multistep-container .active-button li:not(:first-child) .round-btn:before
+{
+    position: absolute;
+    content: '';
+    width: 80px;
+    height: 3px;
+    background-color: #ccc;
+    left: -50px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: -1;
+}
+.multistep-container .active-button li.active:not(:first-child) .round-btn:before
+{
+    background-color: blue;
+}
+
+.multistep-container .multistep-form-area
+{
+    background-color: white;
+    margin-top: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,.5);
+    position: relative;
+    overflow: hidden;
+    min-height: 600px;
+    max-height: 1200px;
+}
+.multistep-container .multistep-form-area .form-box
+{
+
+}
+.multistep-container .multistep-form-area .form-box:nth-child(2)
+{
+    display: none;
+}
+.multistep-container .multistep-form-area .form-box:nth-child(3)
+{
+    display: none;
+}
+.multistep-container .multistep-form-area .form-box:nth-child(4)
+{
+    display: none;
+}
+.multistep-container .multistep-form-area .form-box:nth-child(5)
+{
+    display: none;
+}
+.multistep-container .multistep-form-area .form-box:nth-child(6)
+{
+    display: none;
+}
+
+.error {
+    color: red;
+}
+/* The message box is shown when the user clicks on the password field */
+#message {
+  display:none;
+  background: #f1f1f1;
+  color: #000;
+  position: relative;
+  padding: 5px;
+  margin-top: 2px;
+}
+
+#message p {
+  padding: 2px 5px;
+  font-size: 14px;
+}
+
+/* Add a green text color and a checkmark when the requirements are right */
+.valid {
+  color: green;
+}
+
+.valid:before {
+  position: relative;
+  left: -35px;
+}
+
+/* Add a red text color and an "x" icon when the requirements are wrong */
+.invalid {
+  color: red;
+}
+
+.invalid:before {
+  position: relative;
+  left: -35px;
+}

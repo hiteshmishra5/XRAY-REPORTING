@@ -1,0 +1,1023 @@
+{% extends "users/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'resource/css/main.css' %}">
+<div class="container col-md-9">
+    <div class="row">
+        <div class="container col-md-12">
+            <div class="multistep-container">
+                <div class="multistep-form-area">
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <p class="text-black text-decoration-underline">U4RAD is glad to have you on the team, and we request you to please fill in the required information for our record</p>
+                            <h3>Personal Information</h3>
+                        </div>
+                        <form action="/regrdo/personal" enctype="multipart/form-data" method="POST" id="step_1">
+                            {% csrf_token %}
+                            <div class="row py-2">
+                                <!--name-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Full name</label>
+                                        <input type="text" name="name" class="form-control form-control-sm" minlength="4" maxlength="25" required>
+                                    </div>
+                                </div>
+
+                                <!--Email ID-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Email ID</label>
+                                        <input type="email" name="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control form-control-sm" maxlength="50" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Password-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input id="password" type="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" class="form-control form-control-sm" maxlength="12" required>
+                                        <input type="checkbox" onclick="passWord()">Show Password
+                                    </div>
+                                    <div id="message">
+                                        <h5>Password must contain the following:</h5>
+                                        <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                                        <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                                        <p id="number" class="invalid">A <b>number</b></p>
+                                        <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                                    </div>
+                                </div>
+
+                                <!--Confirm Password-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password" id="cnfpassword" name="cnfpassword" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" class="form-control form-control-sm" maxlength="12" required>
+                                        <input type="checkbox" onclick="cnfpassWord()">Show Password
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Phone-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Phone</label>
+                                        <input type="text" minlength="10" name="phone" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+
+                                <!--Alternate phone-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Alternate phone</label>
+                                        <input type="text" minlength="10" name="altphone" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row py-2">
+                                <!--reference-->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Reference, if any</label>
+                                        <input type="text" name="reference" class="form-control form-control-sm" maxlength="50">
+                                    </div>
+                                </div>
+
+                                <!--Upload Resume-->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Upload Resume</label>
+                                        <input type="file" name="resume" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+
+                                <!--upload Picture-->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Upload Passport size photo</label>
+                                        <input type="file" name="uploadpicture" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Button-->
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="submit" value="Next" data-form-id="step_1" class="btn btn-primary btn-sm next">
+                            </div>
+                            <hr>
+                            <p class='btn-sm text-center'>Already Registered?
+                                <a href="{% url 'login' %}" class="btn btn-primary">login</a>
+                            </p>
+                        </form>
+                    </div>
+                    <!--end-->
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <h3>Qualification Details</h3>
+                        </div>
+                        <form action="/regrdo/qualificationdetails" enctype="multipart/form-data" method="POST" id="step_2">
+                            {% csrf_token %}
+                            <div class="row">
+                                <h5>Class 10th details</h5>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>School name</label>
+                                        <input type="text" name="tensname" class="form-control form-control-sm" minlength="4" maxlength="30" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Grade</label>
+                                        <input type="text" name="tengrade" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Passing year</label>
+                                        <input type="month" name="tenpsyr" class="form-control form-control-sm" maxlength="15" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Upload 10th certificate</label>
+                                        <input type="file" name="tencertificate" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row py-2">
+                                <h5>Class 12th details</h5>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>School/University name</label>
+                                        <input type="text" name="twelvesname" class="form-control form-control-sm" minlength="4" maxlength="30" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Grade</label>
+                                        <input type="text" name="twelvegrade" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Passing year</label>
+                                        <input type="month" name="twelvepsyr" class="form-control form-control-sm" maxlength="15" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Upload 12th certificate</label>
+                                        <input type="file" name="twelvecertificate" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <h5>MBBS details</h5>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Institution name</label>
+                                        <input type="text" name="mbbsinstitution" class="form-control form-control-sm" minlength="4" maxlength="25" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Grade</label>
+                                        <input type="text" name="mbbsgrade" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Passing year</label>
+                                        <input type="month" name="mbbspsyr" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload marksheets</label>
+                                        <input type="file" name="mbbsmarksheet" multiple class="form-control form-control-sm multi" required>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload degree</label>
+                                        <input type="file" name="mbbsdegree" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <h5>MD/DNB details</h5>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Institution name</label>
+                                        <input type="text" name="mdinstitution" class="form-control form-control-sm" minlength="4" maxlength="25" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Grade</label>
+                                        <input type="text" name="mdgrade" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Passing year</label>
+                                        <input type="month" name="mdpsyr" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Upload degree</label>
+                                        <input type="file" name="mddegree" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Button-->
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Next" data-form-id="step_2" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <h3>Work experience(if any)</h3>
+                        </div>
+                        <form action="/regrdo/workexp" enctype="multipart/form-data" method="POST" id="step_3">
+                            {% csrf_token %}
+                            <!--work experience-->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Institution name</label>
+                                        <input type="text" name="exinstitution" class="form-control form-control-sm" minlength="4" maxlength="30">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Start date</label>
+                                        <input type="date" name="exstdate" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>End date</label>
+                                        <input type="date" name="exenddate" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Designation</label>
+                                        <input type="text" name="designation"  class="form-control form-control-sm" minlength="4" maxlength="15">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row py-2">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Institution name</label>
+                                        <input type="text" name="exinstitution1" class="form-control form-control-sm" minlength="4" maxlength="30">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Start date</label>
+                                        <input type="date" name="exstdate1" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>End date</label>
+                                        <input type="date" name="exenddate1" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Designation</label>
+                                        <input type="text" name="designation1"  class="form-control form-control-sm" minlength="4" maxlength="15">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--previous work-->
+                            <div class="row">
+                                <h5>Have previously worked with U4RAD? If yes,</h5>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Start date</label>
+                                        <input type="date" name="prexst" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>End date</label>
+                                        <input type="date" name="prexend" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                            <h3>Other details</h3>
+                            </div>
+                            <!--other details-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Professional Indemnity Insurence</label>
+                                        <input type="text" name="pii" class="form-control form-control-sm" maxlength="15">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>MCI state name</label>
+                                        <input type="text" name="msname" class="form-control form-control-sm" minlength="4" maxlength="15">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>MCI registration number</label>
+                                        <input type="text" name="mcirgno" class="form-control form-control-sm" minlength="4" maxlength="15">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload registration certificate</label>
+                                        <input type="file" name="regcer" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Button-->
+
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Next" data-form-id="step_3" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <h3 class="text-decoration-underline">Banking Information</h3>
+                        </div>
+                        <form action="/regrdo/bankinginfo" enctype="multipart/form-data" method="POST" id="step_4">
+                            {% csrf_token %}
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Name of bank</label>
+                                        <input type="text" name="bankname" class="form-control form-control-sm" minlength="4" maxlength="25" required>
+                                    </div>
+                                </div>
+
+                                <!--Account Number-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Account Number</label>
+                                        <input type="text" name="acnumber" class="form-control form-control-sm" minlength="4" maxlength="15" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--IFSC Code-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>IFSC Code</label>
+                                        <input type="text" name="ifsc" class="form-control form-control-sm" minlength="4" maxlength="15" required>
+                                    </div>
+                                </div>
+
+                                <!--PAN card number-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>PAN card number</label>
+                                        <input type="text" name="pancardno" class="form-control form-control-sm" minlength="4" maxlength="15" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row py-2">
+                                <!--Pan card-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload PAN card</label>
+                                        <input type="file" name="pancard" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                                <!--Cancel cheque-->
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload cancelled cheque</label>
+                                        <input type="file" name="cheque" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+
+                                <!--Photo ID proof-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Upload photo ID proof</label>
+                                        <input type="file" name="pictureproof" class="form-control form-control-sm" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Button-->
+
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Next" data-form-id="step_4" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <h3 class="text-decoration-underline">Reporting Area</h3>
+                        </div>
+                        <form action="/regrdo/reportingarea" method="POST" id="step_5">
+                            {% csrf_token %}
+                            <div class="row py-2">
+                                <div class="col-md-5">
+                                    <label for="mri" class="form-label">MRI (hold shift to select more than one):</label>
+                                    <select multiple class="form-select" id="mri" name="mriopt">
+                                        <option value="1">Brain</option>
+                                        <option value="2">Spine</option>
+                                        <option value="3">MSK</option>
+                                        <option value="4">Body</option>
+                                    </select>
+                                    <div class="form-group py-2">
+                                        <label>Other</label>
+                                        <input type="text" name="mriothers" class="form-control form-control-sm" maxlength="100">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <label for="ct" class="form-label">CT (hold shift to select more than one):</label>
+                                    <select multiple class="form-select" id="ct" name="ctopt">
+                                        <option value="1">Brain</option>
+                                        <option value="2">Chest</option>
+                                        <option value="3">Abdomen</option>
+                                        <option value="4">Neck</option>
+                                        <option value="5">Angio</option>
+                                    </select>
+                                    <div class="form-group py-2">
+                                        <label>Other</label>
+                                        <input type="text" name="ctothers" class="form-control form-control-sm" maxlength="100">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <div class="form-check py-2">
+                                        <input type="checkbox" class="form-check-input" id="xray" name="xray">
+                                        <label class="form-check-label" for="xray">X-ray</label>
+                                    </div>
+                                    <div class="form-check py-2">
+                                        <input type="checkbox" class="form-check-input" id="other" name="other">
+                                        <label class="form-check-label" for="other">Other</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Button-->
+
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Next" data-form-id="step_5" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+                    <!--start-->
+                    <div class="form-box border py-4 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">3</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">4</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">5</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">6</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center py-3">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Radiologist</h3>
+                            <h3 class="text-decoration-underline">Time availability</h3>
+                        </div>
+                        <form action="/regrdo/timeavailability" method="POST" id="step_6">
+                            {% csrf_token %}
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="monday" name="monday">
+                                        <label class="form-check-label">Monday</label>
+                                    </div>
+                                </div>
+
+                                <!--monday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="monst">From:</label>
+                                        <input type="time" id="monst" name="monst" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="monend">to:</label>
+                                        <input type="time" id="monend" name="monend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--tuesday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="tuesday" name="tuesday">
+                                        <label class="form-check-label">Tuesday</label>
+                                    </div>
+                                </div>
+
+                                <!--tuesday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="tuest">From:</label>
+                                        <input type="time" id="tuest" name="tuest" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="tueend">to:</label>
+                                        <input type="time" id="tueend" name="tueend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--wednesday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="wednesday" name="wednesday">
+                                        <label class="form-check-label">Wednesday</label>
+                                    </div>
+                                </div>
+
+                                <!--wednesday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="wedst">From:</label>
+                                        <input type="time" id="wedst" name="wedst" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="wedend">to:</label>
+                                        <input type="time" id="wedend" name="wedend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--thursday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="thursday" name="thursday">
+                                        <label class="form-check-label">Thursday</label>
+                                    </div>
+                                </div>
+
+                                <!--thursday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="thust">From:</label>
+                                        <input type="time" id="thust" name="thust" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="thuend">to:</label>
+                                        <input type="time" id="thuend" name="thuend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--friday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="friday" name="friday">
+                                        <label class="form-check-label">Friday</label>
+                                    </div>
+                                </div>
+
+                                <!--friday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="frist">From:</label>
+                                        <input type="time" id="frist" name="frist" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="friend">to:</label>
+                                        <input type="time" id="friend" name="friend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--saturday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="saturday" name="saturday">
+                                        <label class="form-check-label">Saturday</label>
+                                    </div>
+                                </div>
+
+                                <!--saturday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="satst">From:</label>
+                                        <input type="time" id="satst" name="satst" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="satend">to:</label>
+                                        <input type="time" id="satend" name="satend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--sunday-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="sunday" name="sunday">
+                                        <label class="form-check-label">Sunday</label>
+                                    </div>
+                                </div>
+
+                                <!--sunday time-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="sunst">From:</label>
+                                        <input type="time" id="sunst" name="sunst" value="09:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label for="sunend">to:</label>
+                                        <input type="time" id="sunend" name="sunend" value="18:00" class="form-control-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Button-->
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Submit" data-form-id="step_6" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" async integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+    $(document).ready(function(){
+        $(".multistep-container .form-box .button-row .next").click(function(){
+            let _this = $(this);
+            var form_id = $(this).data('form-id');
+            form_id = `#${form_id}`;
+            let rules = {};
+            $(`${form_id} :input`).each(function() {
+                let isRequired = $(this).attr('required');
+                if (isRequired) {
+                    rules[$(this).attr('name')] = "required";
+                }
+                if($(this).attr('name') == "cnfpassword") {
+                    rules[$(this).attr('name')] = {
+                        equalTo: "#password",
+                    }
+                }
+                if($(this).attr('name') == "email") {
+                    rules[$(this).attr('name')] = {
+                        required: true,
+                        remote: {
+                            url: '/user-exists',
+                            type: 'post',
+                            data: {
+                                email: function() {
+                                    return $("input[name='email']").val()
+                                }
+                            }
+                        }
+                    }
+                }
+                console.log(rules);
+                if($(this).attr('name') == "phone") {
+                    rules[$(this).attr('name')] = {
+                        required: true,
+                        remote: {
+                            url: '/phone-exists',
+                            type: 'post',
+                            data: {
+                                cnprphone: function() {
+                                    return $("input[name='phone']").val()
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            $(form_id).validate({
+                rules: rules,
+                submitHandler: function (v) {
+                    if (form_id == '#step_6') {
+                        $('form').each(function(f) {
+                            var form = $(this);
+                            form.on('submit', function(e) {
+                                e.preventDefault();
+                            });
+
+                            $.ajax({
+                                url: form.attr('action'),
+                                data: new FormData(document.getElementById(form.attr('id'))),
+                                type: 'POST',
+                                contentType: false,
+                                processData: false,
+                                success: function(r) {
+                                    if(r.redirect) {
+                                        swal("You have been registered successfully!", {
+                                          icon: 'success',
+                                          showCancelButton: false,
+                                        }).then((value) => {
+                                            window.location.replace('/');
+                                        });
+                                    }
+                                },
+                            });
+                        });
+                    } else {
+                       _this.parents(".form-box").fadeOut('fast');
+                       _this.parents(".form-box").next().fadeIn('fast');
+                    }
+                }
+            });
+        });
+
+        $(".multistep-container .form-box .button-row .previous").click(function(){
+            $(this).parents(".form-box").fadeOut('fast');
+            $(this).parents(".form-box").prev().fadeIn('fast');
+        });
+    });
+    var myInput = document.getElementById("password");
+    var letter = document.getElementById("letter");
+    var capital = document.getElementById("capital");
+    var number = document.getElementById("number");
+    var length = document.getElementById("length");
+
+    // When the user clicks on the password field, show the message box
+    myInput.onfocus = function() {
+      document.getElementById("message").style.display = "block";
+    }
+
+    // When the user clicks outside of the password field, hide the message box
+    myInput.onblur = function() {
+      document.getElementById("message").style.display = "none";
+    }
+
+    // When the user starts to type something inside the password field
+    myInput.onkeyup = function() {
+      // Validate lowercase letters
+      var lowerCaseLetters = /[a-z]/g;
+      if(myInput.value.match(lowerCaseLetters)) {
+        letter.classList.remove("invalid");
+        letter.classList.add("valid");
+      } else {
+        letter.classList.remove("valid");
+        letter.classList.add("invalid");
+      }
+
+      // Validate capital letters
+      var upperCaseLetters = /[A-Z]/g;
+      if(myInput.value.match(upperCaseLetters)) {
+        capital.classList.remove("invalid");
+        capital.classList.add("valid");
+      } else {
+        capital.classList.remove("valid");
+        capital.classList.add("invalid");
+      }
+
+      // Validate numbers
+      var numbers = /[0-9]/g;
+      if(myInput.value.match(numbers)) {
+        number.classList.remove("invalid");
+        number.classList.add("valid");
+      } else {
+        number.classList.remove("valid");
+        number.classList.add("invalid");
+      }
+
+      // Validate length
+      if(myInput.value.length >= 8) {
+        length.classList.remove("invalid");
+        length.classList.add("valid");
+      } else {
+        length.classList.remove("valid");
+        length.classList.add("invalid");
+      }
+    }
+
+    //show password
+    function passWord() {
+      var x = document.getElementById("password");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+    function cnfpassWord() {
+      var x = document.getElementById("cnfpassword");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+
+    //only numbers
+    $(function() {
+        $("input[name='phone']").on('input', function(e) {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        });
+    });
+    $(function() {
+        $("input[name='altphone']").on('input', function(e) {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        });
+    });
+</script>
+
+{% endblock %}

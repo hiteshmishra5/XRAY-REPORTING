@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reporting BOT</title>
+    {% load static %}
+  </head>
+  <body>
+    <div id="main">
+      <div id="root"></div>
+    </div>
+    {{ current_user|json_script:'current-user' }}
+    <script src="{% static "frontend/main.js" %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+
+  </body>
+</html>

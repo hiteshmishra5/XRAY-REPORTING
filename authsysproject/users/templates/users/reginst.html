@@ -1,0 +1,443 @@
+{% extends "users/base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'resource/css/main.css' %}">
+<div class="container col-md-9">
+    <div class="row">
+        <div class="container col-md-12">
+            <div class="multistep-container">
+                <div class="multistep-form-area">
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li>
+                                <span class="round-btn">2</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Institution</h3>
+                        </div>
+                        <form action="/reginst/personal" method="POST" id="step_1">
+                            {% csrf_token %}
+                            <div class="row">
+                                <!--name-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Institution full name</label>
+                                        <input type="text" name="instfullname" class="form-control form-control-sm" maxlength="25" required>
+                                    </div>
+                                </div>
+
+                                <!--inst address-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Institution address</label>
+                                        <input type="text" name="instadd" class="form-control form-control-sm" maxlength="100" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Contact person-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Contact person name</label>
+                                        <input type="text" name="cnprname" class="form-control form-control-sm" maxlength="30" required>
+                                    </div>
+                                </div>
+
+                                <!--Contact person designation-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Contact person designation</label>
+                                        <input type="text" name="cnprdesignation" class="form-control form-control-sm" maxlength="25" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Phone-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>contact person number</label>
+                                        <input type="text" minlength="10" name="cnprphone" pattern="[0-9]" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+
+                                <!--Alternate contact person-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Alternate contact person name</label>
+                                        <input type="text" name="altcnprname" class="form-control form-control-sm" maxlength="30" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <!--alt Contact person designation-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Alternate contact person designation</label>
+                                        <input type="text" name="altcnprdesignation" class="form-control form-control-sm" maxlength="25" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Alternate contact person number</label>
+                                        <input type="text" minlength="10" name="altcnprphone" pattern="[0-9]" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Mail for pacs-->
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Email ID for PACS and Login</label>
+                                        <input type="email" name="emailfrpacs" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control form-control-sm" maxlength="50" required>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Accounts Email ID</label>
+                                        <input type="email" name="emailfraccount" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" class="form-control form-control-sm" maxlength="50" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!--accounts Contact person-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Accounts contact person name</label>
+                                        <input type="text" name="accountcnpr" class="form-control form-control-sm" maxlength="15" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Accounts contact person number</label>
+                                        <input type="text" minlength="10" pattern="(?=.*\d)" name="acccnprphone" class="form-control form-control-sm" maxlength="10" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--password-->
+                            <div class="row py-2">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input id="password1" type="password" name="password1" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" class="form-control form-control-sm" minlength="7" maxlength="12" required>
+                                        <input type="checkbox" onclick="passWord1()">Show Password
+                                    </div>
+                                    <div id="message">
+                                        <h5>Password must contain the following:</h5>
+                                        <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+                                        <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+                                        <p id="number" class="invalid">A <b>number</b></p>
+                                        <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+                                    </div>
+                                </div>
+
+                                <!--Confirm Password-->
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input type="password" id="cnfpassword1" name="cnfpassword1" class="form-control form-control-sm" minlength="7" maxlength="12" required>
+                                        <input type="checkbox" onclick="cnfpassWord1()">Show Password
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--Button-->
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="submit" value="Next" data-form-id="step_1" class="btn btn-primary btn-sm next">
+                            </div>
+                            <hr>
+                            <p class='btn-sm text-center'>Already Registered?<a href="{% url 'login' %}" class="btn btn-primary">login</a></p>
+                        </form>
+                    </div>
+                    <!--end-->
+                    <!--start-->
+                    <div class="form-box py-3 px-3">
+                        <ul class="active-button">
+                            <li class="active">
+                                <span class="round-btn">1</span>
+                            </li>
+                            <li class="active">
+                                <span class="round-btn">2</span>
+                            </li>
+                        </ul>
+                        <br>
+                        <div class="text-center">
+                            <h3 class="alert alert-light border rounded bg-primary text-white">U4RAD Engagement form for Institution</h3>
+                            <h3 class="text-decoration-underline text-center">Modalities:MRI/CT/X-Rays</h3>
+                        </div>
+                        <form action="/reginst/modalities" method="POST" id="step_2">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="mri" class="form-label">Types of MRI cases(hold shift to select more than one):</label>
+                                    <select multiple class="form-select" id="mri" name="mriopt1">
+                                        <option value="1">Brain</option>
+                                        <option value="2">Spine</option>
+                                        <option value="3">MSK</option>
+                                        <option value="4">Body</option>
+                                    </select>
+                                    <div class="form-group">
+                                        <label>Other</label>
+                                        <input type="text" name="mriothers1" class="form-control form-control-sm" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ct" class="form-label">Types of CT cases(hold shift to select more than one):</label>
+                                    <select multiple class="form-select" id="ct" name="ctopt1">
+                                        <option value="1">Brain</option>
+                                        <option value="2">Chest</option>
+                                        <option value="3">Abdomen</option>
+                                        <option value="4">Neck</option>
+                                        <option value="5">Angio</option>
+                                    </select>
+                                    <div class="form-group">
+                                        <label>Other</label>
+                                        <input type="text" name="ctothers1" class="form-control form-control-sm" maxlength="100">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="xray" name="xray1">
+                                        <label class="form-check-label" for="xray">X-ray</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="other" name="other1">
+                                        <label class="form-check-label" for="other">Other</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Any radiologists preference</label>
+                                        <input type="text" name="rdoprefrence" class="form-control form-control-sm" maxlength="15" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Expected number of cases per day</label>
+                                        <input type="number" name="exnocase" class="form-control form-control-sm" maxlength="5" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <h3 class="text-decoration-underline text-center">TAT</h3>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Urgent cases</label>
+                                        <input type="text" name="urgent" class="form-control form-control-sm" maxlength="30" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Non-urgent cases</label>
+                                        <input type="text" name="nonurgent" class="form-control form-control-sm" maxlength="30" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Button-->
+                            <div class="form-group text-center mt-3 button-row">
+                                <input type="button" value="Previous" class="btn btn-primary btn-sm previous">
+                                <input type="submit" value="Submit" data-form-id="step_2" class="btn btn-primary btn-sm next">
+                            </div>
+                        </form>
+                    </div>
+                    <!--end-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" async integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(document).ready(function(){
+        $(".multistep-container .form-box .button-row .next").click(function(){
+            let _this = $(this);
+            var form_id = $(this).data('form-id');
+            form_id = `#${form_id}`;
+            let rules = {};
+            $(`${form_id} :input`).each(function() {
+                let isRequired = $(this).attr('required');
+                if (isRequired) {
+                    rules[$(this).attr('name')] = "required";
+                }
+                if($(this).attr('name') == "cnfpassword1") {
+                    rules[$(this).attr('name')] = {
+                        equalTo: "#password1",
+                    }
+                }
+                if($(this).attr('name') == "emailfrpacs") {
+                    rules[$(this).attr('name')] = {
+                        required: true,
+                        remote: {
+                            url: '/user-exists',
+                            type: 'post',
+                            data: {
+                                email: function() {
+                                    return $("input[name='emailfrpacs']").val()
+                                }
+                            }
+                        }
+                    }
+                }
+                if($(this).attr('name') == "cnprphone") {
+                    rules[$(this).attr('name')] = {
+                        required: true,
+                        remote: {
+                            url: '/number-exists',
+                            type: 'post',
+                            data: {
+                                cnprphone: function() {
+                                    return $("input[name='cnprphone']").val()
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            $(form_id).validate({
+                rules: rules,
+                submitHandler: function (v) {
+                    if (form_id == '#step_2') {
+                        $('form').each(function(f) {
+                            var form = $(this);
+                            form.on('submit', function(e) {
+                                e.preventDefault();
+                            });
+                            $.post(form.attr('action'), form.serializeArray(), function(r) {
+                                if(r.redirect) {
+                                    swal("You have been registered successfully!", {
+                                      icon: 'success',
+                                      showCancelButton: false,
+                                    }).then((value) => {
+                                        window.location.replace('/');
+                                    });
+                                }
+                            });
+                        });
+                    } else {
+                       _this.parents(".form-box").fadeOut('fast');
+                       _this.parents(".form-box").next().fadeIn('fast');
+                    }
+                }
+            });
+        });
+
+        $(".multistep-container .form-box .button-row .previous").click(function(){
+            $(this).parents(".form-box").fadeOut('fast');
+            $(this).parents(".form-box").prev().fadeIn('fast');
+        });
+    });
+
+    var myInput = document.getElementById("password1");
+    var letter = document.getElementById("letter");
+    var capital = document.getElementById("capital");
+    var number = document.getElementById("number");
+    var length = document.getElementById("length");
+
+    // When the user clicks on the password field, show the message box
+    myInput.onfocus = function() {
+      document.getElementById("message").style.display = "block";
+    }
+
+    // When the user clicks outside of the password field, hide the message box
+    myInput.onblur = function() {
+      document.getElementById("message").style.display = "none";
+    }
+
+    // When the user starts to type something inside the password field
+    myInput.onkeyup = function() {
+      // Validate lowercase letters
+      var lowerCaseLetters = /[a-z]/g;
+      if(myInput.value.match(lowerCaseLetters)) {
+        letter.classList.remove("invalid");
+        letter.classList.add("valid");
+      } else {
+        letter.classList.remove("valid");
+        letter.classList.add("invalid");
+      }
+
+      // Validate capital letters
+      var upperCaseLetters = /[A-Z]/g;
+      if(myInput.value.match(upperCaseLetters)) {
+        capital.classList.remove("invalid");
+        capital.classList.add("valid");
+      } else {
+        capital.classList.remove("valid");
+        capital.classList.add("invalid");
+      }
+
+      // Validate numbers
+      var numbers = /[0-9]/g;
+      if(myInput.value.match(numbers)) {
+        number.classList.remove("invalid");
+        number.classList.add("valid");
+      } else {
+        number.classList.remove("valid");
+        number.classList.add("invalid");
+      }
+
+      // Validate length
+      if(myInput.value.length >= 8) {
+        length.classList.remove("invalid");
+        length.classList.add("valid");
+      } else {
+        length.classList.remove("valid");
+        length.classList.add("invalid");
+      }
+    }
+
+    //show password
+    function passWord1() {
+      var x = document.getElementById("password1");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+    function cnfpassWord1() {
+      var x = document.getElementById("cnfpassword1");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+
+    //only numbers
+    $(function() {
+        $("input[name='cnprphone']").on('input', function(e) {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        });
+    });
+    $(function() {
+        $("input[name='altcnprphone']").on('input', function(e) {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        });
+    });
+    $(function() {
+        $("input[name='acccnprphone']").on('input', function(e) {
+            $(this).val($(this).val().replace(/[^0-9]/g, ''));
+        });
+    });
+
+</script>
+
+{% endblock %}

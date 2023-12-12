@@ -4,6 +4,13 @@ import "./style.css";
 import CKEditor from "@ckeditor/ckeditor5-react";
 import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import XrayChest from "./Utils/XrayChest";
+import CampECG2 from "./Utils/CampECG2";
+import Optometry from "./Utils/Optometry";
+import Optometry2 from "./Utils/Optometry2";
+import Optometry3 from "./Utils/Optometry3";
+import Optometry4 from "./Utils/Optometry4";
+import Audiometry from "./Utils/Audiometry";
+import Vitals from "./Utils/Vitals";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { Test } from "@jsonforms/core";
@@ -777,7 +784,21 @@ GetEcgContentOnPDF() {
         {
           this.state.modal && (options_label === "X-RAY CHEST") ?
             <XrayChest handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-            ""
+                this.state.modal && (options_label === "CAMP (ECG)") ?
+                    <CampECG2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                     this.state.modal && (options_label === "VITALS") ?
+                        <Vitals handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                        this.state.modal && (options_label === "OPTOMETRY") ?
+                         <Optometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                           this.state.modal && (options_label === "OPTOMETRY NO-INPUT") ?
+                            <Optometry2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                            this.state.modal && (options_label === "OPTOMETRY (CAMP)") ?
+                              <Optometry3 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                                this.state.modal && (options_label === "AUDIOMETRY") ?
+                                  <Audiometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                                   this.state.modal && (options_label === "OPTOMETRY (CAMP) NO-INPUT") ?
+                                    <Optometry4 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                                            ""
         }
         <div className="document-editor">
           <div className="document-editor__toolbar" />

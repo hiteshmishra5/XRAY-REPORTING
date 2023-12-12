@@ -17,6 +17,7 @@ from .models.serviceslist import ServicesList
 from .models.audiopatientdata import audioPatientDetails
 from .models.optometrydata import optopatientDetails
 from .models.vitalpatientdata import vitalPatientDetails
+from .models.DICOMData import DICOMData
 
 admin.site.register(PersonalInfo)
 admin.site.register(WorkExp)
@@ -36,5 +37,6 @@ admin.site.register(Client)
 admin.site.register(Date)
 admin.site.register(Location)
 admin.site.register(ServicesList)
+admin.site.register(DICOMData)
 
 # Register your models here.

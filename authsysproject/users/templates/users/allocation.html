@@ -338,6 +338,54 @@
         font-size: 15px;
         width: 230px;
       }
+    .hidden {
+       display: none;
+     }
+     .dropdown-select {
+          position: relative;
+      }
+
+      .dropdown-select select {
+          width: 100%;
+          padding: 5px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+
+      .dropdown-select select:focus {
+          outline: none;
+          border-color: #007bff;
+          box-shadow: 0 0 5px #007bff;
+      }
+
+       .dropdown-select1 {
+          position: relative;
+      }
+
+      .dropdown-select1 select {
+          width: 70%;
+          padding: 5px;
+          font-size: 12px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+
+      .dropdown-select1 select:focus {
+          outline: none;
+          border-color: #007bff;
+          box-shadow: 0 0 5px #007bff;
+      }
+
+    .filter-dropdown-container {
+          display: flex;
+          align-items: center;
+      }
+
+      .filter-dropdown-container > div {
+          margin-right: 10px; /* Adjust this value to control the space between the "Date" header and the dropdown */
+      }
+
     </style>
   </head>
 
@@ -393,13 +441,40 @@
             <table id="patientTable">
               <thead>
                 <tr>
-                  <th>Patient Name</th>
                   <th>Patient ID</th>
+                  <th>Patient Name</th>
                   <th>Age</th>
                   <th>Gender</th>
                   <th>Heart Rate</th>
-                  <th>Test Date</th>
-                  <th>Report Date</th>
+                  <th class='hidden interval'>PR Interval</th>
+                  <th>
+                      <div class="filter-dropdown-container">
+                          <div>Test Date</div>
+                          <div class="dropdown-select1" id="filter-date-dropdown-date">
+                              <select id="filter-date-select-date" class="form-control">
+                                  <option value="">All</option>
+                                  {% for date in Date %}
+                                      <option value="{{ date }}">{{ date }}</option>
+                                  {% endfor %}
+                              </select>
+                          </div>
+                      </div>
+                  </th>
+                  <th>
+                      <div class="filter-dropdown-container">
+                          <div>Location</div>
+                          <div class="dropdown-select1" id="filter-location-dropdown">
+                              <select id="filter-location-select-location" class="form-control">
+                                  <option value="">All</option>
+                                  {% for location in Location %}
+                                  <option value="{{ location }}" data-city="{{ location.name }}">{{ location }}</option>
+                                  {% endfor %}
+                              </select>
+                          </div>
+                      </div>
+                  </th>
+
+                  <th class='hidden report'>Report Date</th>
                   <th>Image</th>
                   <th>Actions</th>
                   <!-- Add a column for the "Report" button -->
@@ -408,13 +483,15 @@
               <tbody>
                 {% for patient in patients %}
                 <tr class="patientRow" id="{{ patient.PatientId }}">
-                  <td>{{ patient.PatientName }}</td>
                   <td>{{ patient.PatientId }}</td>
+                  <td>{{ patient.PatientName }}</td>
                   <td>{{ patient.age }}</td>
                   <td>{{ patient.gender }}</td>
                   <td>{{ patient.HeartRate }}</td>
+                  <td class='hidden interval'>{{ patient.PRInterval }}</td>
                   <td>{{ patient.TestDate }}</td>
-                  <td>{{ patient.ReportDate }}</td>
+                  <td>{{ patient.date.location.name }}</td>
+                  <td class='hidden report'>{{ patient.ReportDate }}</td>
                   <td>
                     <a
                       class="imageButton"
@@ -427,12 +504,13 @@
                   <td>
                     <a
                       class="reportButton"
-                      href="reporting-bot?data-patientid={{ patient.PatientId }}&data-patientname={{ patient.PatientName }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-heartrate={{ patient.HeartRate }}&data-testdate={{ patient.TestDate }}&data-reportdate={{ patient.ReportDate }}&data-reportimage={{ patient.reportimage }}"
+                      href="reporting-bot?data-patientid={{ patient.PatientId }}&data-patientname={{ patient.PatientName }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-heartrate={{ patient.HeartRate }}&data-printerval={{patient.PRInterval}}&data-testdate={{ patient.TestDate }}&data-reportdate={{ patient.ReportDate }}&data-reportimage={{ patient.reportimage }}"
                       data-patient-id="{{ patient.PatientId }}"
                       data-patientname="{{ patient.PatientName }}"
                       data-age="{{ patient.age }}"
                       data-gender="{{ patient.gender }}"
                       data-heartrate="{{ patient.HeartRate }}"
+                      data-printerval="{{ patient.PRInterval }}"
                       data-testdate="{{ patient.TestDate }}"
                       data-reportdate="{{ patient.ReportDate }}"
                       data-reportimage="{{ patient.reportimage }}"
@@ -495,6 +573,7 @@
             const age = String(button.data("age")).trim();
             const gender = String(button.data("gender")).trim();
             const heartRate = String(button.data("heartrate")).trim();
+            const PRInterval = String(button.data("printerval")).trim();
             const testDate = String(button.data("testdate")).trim();
             const reportDate = String(button.data("reportdate")).trim();
             const reportImage = String(button.data("reportimage")).trim();
@@ -506,7 +585,7 @@
              button.text("Reported");
   
             // Construct the URL with query parameters
-            const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
+            const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
   
             // Redirect to the desired URL
             window.location.href = redirectURL;
@@ -711,7 +790,7 @@
 
             // Hide rows that do not match the selected date
             $("tbody tr").each(function () {
-              var rowDate = $(this).find("td:nth-child(6)").text();
+              var rowDate = $(this).find("td:nth-child(7)").text();
               if (formatDate(rowDate) !== selectedDateFormatted) {
                 $(this).hide();
               }

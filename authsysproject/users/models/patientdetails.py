@@ -16,6 +16,7 @@ class PatientDetails(models.Model):
     HeartRate = models.CharField(max_length=30, null=True, blank=True)
     TestDate = models.CharField(max_length=20)
     ReportDate = models.CharField(max_length=20)
+    PRInterval = models.CharField(max_length=30, null=True, blank=True)
     date = models.ForeignKey(Date, on_delete=models.CASCADE, default=None)
     reportimage = models.URLField(max_length=200, null=True, blank=True)
     cardiologist = models.ForeignKey(PersonalInfo, on_delete=models.SET_NULL, null=True, blank=True)

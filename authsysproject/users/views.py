@@ -83,7 +83,9 @@ def logout(request):
 
 def allocation(request):
     patients = PatientDetails.objects.all()
-    return render(request, 'users/allocation.html', {'patients': patients})
+    unique_date = Date.objects.all()
+    unique_location = Location.objects.all()
+    return render(request, 'users/allocation.html', {'patients': patients, 'Date': unique_date, "Location": unique_location})
 
 def xrayallocation(request):
     patients = DICOMData.objects.all()
@@ -92,7 +94,6 @@ def xrayallocation(request):
 @login_required
 def audiometry(request):
     return render(request, 'users/audiometry.html')
-
 
 def regrdo(request):
     return render(request, 'users/regrdo.html')
@@ -457,8 +458,8 @@ def patientData(request):
         response = serialize("json", patients)
         response = json.loads(response)
         return JsonResponse(status=200, data=response, safe=False)
-    
-    
+
+
     
 #Added by Aman at 05:46
 
@@ -841,7 +842,6 @@ class Google(View):
 def GoogleDrive():
     # The file that contains the OAuth 2.0 credentials.
     CLIENT_SECRET_FILE = 'users/GoogleDriveAPI.json'
-    print(CLIENT_SECRET_FILE)
 
     # The name of the API and version of the API.
     API_NAME = 'drive'
@@ -851,22 +851,17 @@ def GoogleDrive():
     SCOPES = ['https://www.googleapis.com/auth/drive']
 
     def create_service():
-        print("at 1")
         # Create the credentials.
         creds = None
         if os.path.exists('token.pickle'):
-            print("at 2")
             with open('token.pickle', 'rb') as token:
                 creds = pickle.load(token)
 
         # If the credentials don't exist or are invalid, then create new ones.
         if not creds or not creds.valid:
-            print("at 3")
             if creds and creds.expired and creds.refresh_token:
-                print("at 4")
                 creds.refresh(Request())
             else:
-                print("at 5")
                 # Create the flow object.
                 flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
 
@@ -878,22 +873,17 @@ def GoogleDrive():
                     pickle.dump(creds, token)
         # Create the service object.
         service = build(API_NAME, API_VERSION, credentials=creds)
-        print("at 5")
         return service
 
     # folder_id = '1RjxYJcv4vbv1WFfcUtCWm-qh0N3KRd0n'
-    folder_id = '1ejnci27e9p7Y7uk-huplMgWSqNGx6U30'
-    print("at 6")
+    folder_id = '1RjxYJcv4vbv1WFfcUtCWm-qh0N3KRd0n'
     service = create_service()
-    print("at 7")
 
     existing_patient_ids = set(PatientDetails.objects.values_list('PatientId', flat=True))
     fetch_patient_data_from_folder(service, folder_id, existing_patient_ids)
-    print("at 8")
 
 def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
     prefix = "https://lh3.googleusercontent.com/d/"
-    print("at 8")
 
     stack = [(folder_id, None)]
     patient_data_by_date = {}
@@ -901,14 +891,13 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
     while stack:
         current_folder_id, current_location_id = stack.pop()
         query = f"'{current_folder_id}' in parents and mimeType='application/vnd.google-apps.folder'"
-        print("at 9")
         subfolders = service.files().list(q=query).execute()
 
         for subfolder in subfolders.get('files', []):
             subfolder_id = subfolder['id']
             subfolder_name = subfolder['name']
-            print("at 10")
-             
+            print(f"Folder Name: {subfolder_name}, ID: {subfolder_id}")
+
             # Process the subfolder even if it's not a known location
             stack.append((subfolder_id, subfolder_name))
             technician_name = subfolder_name
@@ -916,7 +905,6 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
 
             if technician_name:
                 location = Location.objects.filter(technician_name=technician_name).first()
-                
                 if location:
                     location_id = location.id
 
@@ -928,7 +916,7 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
                         file_id = data['id']
                         # Create reportingimage by adding the prefix
                         reportimage = f'{prefix}{file_id}'
-                        
+
                         # Rest of your code...
 
                         # Download the file content from Google Drive.
@@ -948,23 +936,23 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
                                 patient_age = str(first_page_text).split("Age :")[1].split(" ")[1].split("\n")[0]
                                 patient_gender = str(first_page_text).split("Gender :")[1].split("\n")[0]
                                 heart_rate = str(first_page_text).split("HR:")[1].split(" ")[1].split("/")[0]
+                                pr_interval = str(first_page_text).split("PR:")[1].split("QRS:")[0].split("ms")[0].strip()
                                 report_time = str(first_page_text).split("Acquired on:")[1][12:17]
                                 raw_date = str(first_page_text).split("Acquired on:")[1][0:11].strip()
                                 formatted_date = datetime.strptime(raw_date, '%Y-%m-%d').date()
-                                print(patient_name, patient_id)
 
                                 # Update location_id within this loop if location is found
-
                                 if formatted_date not in patient_data_by_date:
                                     patient_data_by_date[formatted_date] = []
                                 patient_data_by_date[formatted_date].append(
-                                    (patient_id, patient_name, patient_age, patient_gender, int(heart_rate), report_time))
+                                    (patient_id, patient_name, patient_age, patient_gender, int(heart_rate), int(pr_interval),
+                                     report_time))
 
                                 if patient_id not in existing_patient_ids and location_id is not None:
                                     existing_patient_ids.add(patient_id)
 
                                     date, created = Date.objects.get_or_create(date_field=formatted_date,
-                                                                                   location_id=location_id)
+                                                                               location_id=location_id)
 
                                     patient = PatientDetails(
                                         PatientId=patient_id,
@@ -972,12 +960,12 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
                                         age=patient_age,
                                         gender=patient_gender,
                                         HeartRate=heart_rate,
-                                        TestDate=report_time,
-                                        ReportDate=report_time,
+                                        PRInterval = pr_interval,
+                                        TestDate=formatted_date,
+                                        ReportDate=formatted_date,
                                         date_id=date.id,
                                         reportimage=reportimage
                                     )
-                                    print(reportimage)
                                     patient.save()
                                     print(f"Patient saved: {patient}")
 

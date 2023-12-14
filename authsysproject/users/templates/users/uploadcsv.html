@@ -21,15 +21,15 @@
             <button type="submit">Upload CSV for audio</button> -->
         </form>
     </div>
-    <div class="col-lg-6">
-        <form method="POST" enctype="multipart/form-data" action="{% url 'uploadcsvforopto' %}">
-            {% csrf_token %}
-            <input type="file" class="form-control col-lg-3" name="csv_file" accept=".csv">
-            <button class="btn btn-success col-lg-3" type="submit">Upload CSV for opto</button>
-            <!-- <input type="file" name="csv_file" accept=".csv">
-            <button type="submit">Upload CSV for audio</button> -->
-        </form>
-    </div>
+<!--    <div class="col-lg-6">-->
+<!--        <form method="POST" enctype="multipart/form-data" action="{% url 'uploadcsvforopto' %}">-->
+<!--            {% csrf_token %}-->
+<!--            <input type="file" class="form-control col-lg-3" name="csv_file" accept=".csv">-->
+<!--            <button class="btn btn-success col-lg-3" type="submit">Upload CSV for opto</button>-->
+<!--            &lt;!&ndash; <input type="file" name="csv_file" accept=".csv">-->
+<!--            <button type="submit">Upload CSV for audio</button> &ndash;&gt;-->
+<!--        </form>-->
+<!--    </div>-->
 </div>
 <a href="logout">Logout</a>
 {% endblock content %}

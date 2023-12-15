@@ -362,20 +362,13 @@
       </ul>
     </nav>
     <div class="container">
-      <div id="popup-message" class="popup">
-        <span class="popup-content">Searching for updates...</span>
-      </div>
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
               <h1 class="header">
-                Patient Lists
-                <button type="button" class="refresh" onclick="refreshPage()">
-                  <i style="font-size: 19px" class="fa">&#xf021;</i>
-                </button>
                 <span id="count1">Total Cases: <span id="totalRowCount">0</span>
-                <span id="count2">Completed Cases: <span id="reportedRowCount">0</span>
+                <span id="count2">Reported Cases: <span id="reportedRowCount">0</span>
                 <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
                 <div class="greeting" id="greeting">
                   {% if user %}
@@ -396,8 +389,8 @@
             <table id="patientTable">
               <thead>
                 <tr>
-                  <th>Patient Name</th>
                   <th>Patient ID</th>
+                  <th>Patient Name</th>
                   <th>Age</th>
                   <th>Gender</th>
                   <th>Test Date</th>
@@ -411,8 +404,8 @@
               <tbody>
                 {% for patient in patients %}
                 <tr class="patientRow" id="{{ patient.patient_id }}">
-                  <td>{{ patient.patient_name }}</td>
                   <td>{{ patient.patient_id }}</td>
+                  <td>{{ patient.patient_name }}</td>
                   <td>{{ patient.age }}</td>
                   <td>{{ patient.gender }}</td>
                   <td>{{ patient.study_date }}</td>

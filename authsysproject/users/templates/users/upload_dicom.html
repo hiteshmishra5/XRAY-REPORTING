@@ -1,18 +1,107 @@
 {% extends 'users/base.html' %}
 {% load static %}
 {% block content %}
-  <h2>Upload DICOM Image</h2>
-  <form method="post" enctype="multipart/form-data" action="{% url 'upload_dicom' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Upload</button>
-  </form>
-  <a href="logout">Logout</a>
-  {% if messages %}
-    <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-  {% endblock content %}
+  <style>
+    /* Add your CSS styles here */
+    .card {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      text-align: center; /* Center align the form content */
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    a {
+      display: block;
+      margin-top: 20px;
+      text-align: center;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    ul.messages {
+      list-style-type: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+
+    ul.messages li {
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .custom-file-input {
+      display: none;
+    }
+
+    .custom-file-label {
+      background-color: #007BFF;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+  </style>
+
+  <div class="card">
+    <h2>Upload DICOM Image</h2>
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload_dicom' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  <script>
+    function uploadFile() {
+      var fileInput = document.getElementById('dicomFile');
+      var successMessage = document.getElementById('successMessage');
+
+      if (fileInput.files.length > 0) {
+        // Assuming the file is successfully processed
+        successMessage.innerHTML = 'DICOM file has been uploaded successfully.';
+        successMessage.style.display = 'block';
+      }
+    }
+  </script>
+
+{% endblock content %}

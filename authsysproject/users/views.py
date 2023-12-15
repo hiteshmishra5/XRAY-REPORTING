@@ -931,6 +931,9 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
                         for page in pdf_reader.pages:
                             first_page_text = page.extract_text()
                             patient_id = str(first_page_text).split("Id :")[1].split(" ")[1].split("\n")[0]
+                            if patient_id == '':
+                                patient_id = str(first_page_text).split("Comments")[1].split("HR")[0].strip()
+
                             if patient_id not in existing_patient_ids:
                                 patient_name = str(first_page_text).split("Name :")[1].split("Age :")[0].split('\n')[0]
                                 patient_age = str(first_page_text).split("Age :")[1].split(" ")[1].split("\n")[0]

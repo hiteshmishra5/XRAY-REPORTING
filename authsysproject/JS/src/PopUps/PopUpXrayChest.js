@@ -35,20 +35,20 @@ export default class PopUpXrayChest extends React.Component {
         });
       }
     }
-    // if (data.rightCostophrenicAngle) {
-    //   if (data.rightCostophrenicAngle === 'Obliterated' || data.rightObliteratedType) {
-    //     document.querySelectorAll('label[id^="#/properties/rightCostophrenicAngle"]').forEach((el) => {
-    //       el.classList.remove("err");
-    //     });
-    //   }
-    // }
-    // if (data.leftCostophrenicAngle) {
-    //   if (data.leftObliteratedType) {
-    //     document.querySelectorAll('label[id^="#/properties/leftCostophrenicAngle"]').forEach((el) => {
-    //       el.classList.remove("err");
-    //     });
-    //   }
-    // }
+    if (data.rightCostophrenicAngle) {
+      if (data.rightCostophrenicAngle === 'Obliterated' || data.rightObliteratedType) {
+        document.querySelectorAll('label[id^="#/properties/rightCostophrenicAngle"]').forEach((el) => {
+          el.classList.remove("err");
+        });
+      }
+    }
+    if (data.leftCostophrenicAngle) {
+      if (data.leftObliteratedType) {
+        document.querySelectorAll('label[id^="#/properties/leftCostophrenicAngle"]').forEach((el) => {
+          el.classList.remove("err");
+        });
+      }
+    }
     if (data.pneumothorax) {
       if (data.pneumothoraxL || data.pneumothoraxR) {
         document.querySelectorAll('label[id^="#/properties/pneumothorax"]').forEach((el) => {
@@ -76,7 +76,7 @@ export default class PopUpXrayChest extends React.Component {
     this.setState({ err });
   }
 
-  // ***********************************************************************************
+  // *****************************
   handleDone() {
     const { data, err } = this.state;
     console.log("======data", data);
@@ -260,35 +260,45 @@ export default class PopUpXrayChest extends React.Component {
 
 
     if (!err) {
-      this.props.handleClick();
+      // Make an API call to update the isDone field
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const patientId = urlSearchParams.get("data-patientid");
+
+      // Get the CSRF token from cookies
+      const csrftoken = document.cookie.match(/csrftoken=([\w-]+)/)[1];
+
+      // Make a POST request to your Django backend to update the isDone field
+      fetch(`/api/update_patient_done_status_xray/${patientId}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,  // Include CSRF token in headers
+          // Add any additional headers as needed
+        },
+        body: JSON.stringify({ isDone: true }),
+      })
+      .then(response => {
+        if (response.ok) {
+          // Close the popup after the API call
+          this.setState({ isDone: true }, () => {
+            this.props.handleClick();
+          });
+        } else {
+          // Handle errors
+          console.error('Failed to update isDone status');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
     }
+
+
+
+    this.setState({ isDone: true }, () => {
+      this.props.handleClick();
+    });
   }
-
-  // event handling methods go here
-  // render() {
-  //   const { data, handleClick, name } = this.props;
-  //   return (
-
-  //     <Modal visible={true} onClickBackdrop={this.modalBackdropClicked}>
-
-  //       <div className="modal-header">
-  //         <h5 className="modal-title">{name}</h5>
-  //         <div>
-  //           <button type="button" className="btn btn-secondary" onClick={() => window.location.reload()}>Back</button>
-  //           <button type="button" className="btn btn-primary" style={{ margin: '9px' }} onClick={this.handleDone}>Done</button>
-  //         </div>
-
-  //       </div>
-
-
-  //       <div className="modal-body">
-  //         <Form2 data={data} handleChange={this.handleChange} />
-  //       </div>
-  //       <div className="modal-footer">
-  //       </div>
-  //     </Modal>
-  //   );
-  // }
 
   // event handling methods go here
   render() {

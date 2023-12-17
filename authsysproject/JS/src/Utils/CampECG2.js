@@ -112,6 +112,9 @@ class CampECG2 extends Component {
       if(frmData.PRIntervalFR21 >= 200){
         report += "<p>" + "<b>" + "2. first degree AV block." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
       }
+      if(frmData.HeartTextFR21 >= 60 && frmData.HeartTextFR21 <= 100){
+        report += "<p>" + "<b>" + "2. Normal Sinus Rhythm." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+      }
 
 
 

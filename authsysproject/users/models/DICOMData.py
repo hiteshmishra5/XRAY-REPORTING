@@ -9,3 +9,8 @@ class DICOMData(models.Model):
     study_description = models.CharField(max_length=100, blank=True)
     dicom_file = models.FileField(upload_to='uploads/')
     jpeg_file = models.ImageField(upload_to='uploads/')
+    isDone = models.BooleanField(default=False)
+    notes = models.CharField(max_length=50000, default=True)
+
+    def __str__(self):
+        return self.patient_name

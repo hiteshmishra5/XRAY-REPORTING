@@ -180,15 +180,23 @@
         margin-right: 10px; /* Adjust this value to control the space between the "Date" header and the dropdown */
       }
 
-      .reportButton {
+      a.reportButton {
         color: white;
-        background-color: #ffa500; /* Blue color for the button */
+        background-color: #ffa500;
         border: none;
         border-radius: 5px;
-        padding: 5px 10px; /* Adjust padding for button size */
+        padding: 5px 10px;
         font-size: 15px;
         cursor: pointer;
+        text-decoration: none; /* Add this line to remove underline */
+        transition: background-color 0.3s;
       }
+
+      a.reportButton:hover {
+        background-color: #ff8c00; /* Change to the desired darker orange color on hover */
+        text-decoration: none;
+      }
+
 
       .hidden-row {
         display: none;
@@ -243,10 +251,28 @@
         padding: 10px 15px;
         border-radius: 5px;
         z-index: 1000;
+        max-width: 300px; /* Adjust the maximum width as needed */
+        width: auto; /* Set width to auto or a specific value based on your design */
       }
 
       .popup-content {
         font-size: 14px;
+        /* You can also set a max-width for the content if needed */
+        max-width: 100%;
+        overflow: hidden; /* Hide content overflow if it exceeds the max-width */
+      }
+
+      .small-popup {
+        display: none;
+        position: absolute;
+        background-color: white;
+        color: black;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 300px; /* Adjust the maximum width as needed */
+        width: auto; /* Set width to auto or a specific value based on your design */
       }
 
       /* Apply 3D effect on hover */
@@ -340,7 +366,81 @@
         padding: 5px;
         font-size: 15px;
         width: 230px;
+
       }
+
+      #myInput::placeholder {
+        color: #999; /* Adjust the color as needed */
+      }
+
+      .openClinicalHistoryButton {
+          padding: 3px 5px;
+          font-size: 14px;
+          background-color: blue;
+          color: #fff; /* White text color */
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+      }
+
+      .openClinicalHistoryButton:hover {
+          background-color: #0056b3;
+      }
+
+      a.imageButton {
+        display: inline-block;
+        padding: 3px 5px;
+        background-color: brown;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      a.imageButton:hover {
+        background-color: #8B4513; /* Change to the desired darker brown color */
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      .row-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .count-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: skyblue;
+        border-radius: 10px;
+        font-family: 'Arial', sans-serif;
+      }
+
+      #count1,
+      #count2,
+      .greeting {
+        margin-right: 10px;
+        margin-left:10px;
+        padding: 4px;
+        font-size: 16px;
+      }
+
+      #totalRowCount, #reportedRowCount {
+        color: black;
+      }
+
+      #myInput {
+        padding: 8px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 250px;
+      }
+
     </style>
   </head>
 
@@ -362,23 +462,32 @@
       </ul>
     </nav>
     <div class="container">
+      <div id="clinicalHistoryPopup" class="small-popup">
+       <span class="popup-content"></span>
+      </div>
+
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
               <h1 class="header">
-                <span id="count1">Total Cases: <span id="totalRowCount">0</span>
-                <span id="count2">Reported Cases: <span id="reportedRowCount">0</span>
-                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
-                <div class="greeting" id="greeting">
-                  {% if user %}
-                  <h6>
-                    <strong>{{ user.first_name }}</strong>,
-                    <span id="greeting-text"></span>
-                  </h6>
-                  {% endif %}
+                <div class="row-container">
+                  <div class="count-container">
+                    <span id="count1"><strong>Total Cases:</strong> <span id="totalRowCount">0</span></span>
+                    <span id="count2"><strong>Reported Cases:</strong> <span id="reportedRowCount">0</span></span>
+                  </div>
+                  <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
+                  <div class="greeting" id="greeting">
+                    {% if user %}
+                    <h6>
+                      <strong>{{ user.first_name }}</strong>,
+                      <span id="greeting-text"></span>
+                    </h6>
+                    {% endif %}
+                  </div>
                 </div>
               </h1>
+
             </div>
           </div>
         </div>
@@ -393,10 +502,22 @@
                   <th>Patient Name</th>
                   <th>Age</th>
                   <th>Gender</th>
-                  <th>Test Date</th>
-                  <th>Report Date</th>
+                  <th>
+                    <div class="filter-dropdown-container">
+                      <div>Test Date</div>
+                        <div class="dropdown-select1" id="filter-date-dropdown-date">
+                          <select id="filter-date-select-date" class="form-control">
+                            <option value="">All</option>
+                            {% for date in Date %}
+                              <option value="{{ date }}">{{ date }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </th>
+                  <th>Clinical History</th>
                   <th>Image</th>
-                  <th>Dicom Image</th>
                   <th>Actions</th>
                   <!-- Add a column for the "Report" button -->
                 </tr>
@@ -409,7 +530,11 @@
                   <td>{{ patient.age }}</td>
                   <td>{{ patient.gender }}</td>
                   <td>{{ patient.study_date }}</td>
-                  <td>{{ patient.study_date }}</td>
+                  <td>
+                      <button class="openClinicalHistoryButton" data-clinical-history="{{ patient.notes }}">
+                        Open
+                      </button>
+                    </td>
                   <td>
                     <a
                       class="imageButton"
@@ -418,9 +543,6 @@
                     >
                       Image
                     </a>
-                  </td>
-                  <td>  
-                    <a class="imageButton" target="_blank" href="{% get_media_prefix %}{{ patient.dicom_file }}">Open</a>
                   </td>
                   <td>
                     <a
@@ -434,9 +556,12 @@
                       data-reportdate="{{ patient.study_date }}"
                       data-reportimage="{% get_media_prefix %}{{ patient.jpeg_file }}"
                       data-dicom-file="{% get_media_prefix %}{{ patient.dicom_file }}"
-                      onclick="changeButtonColor(this);"
-                    >
+                      onclick="changeButtonColor(this);">
+                      {% if patient.isDone %}
+                      Reported
+                      {% else %}
                       Report
+                      {% endif %}
                     </a>
                   </td>
                 </tr>
@@ -466,70 +591,73 @@
 
 
     <script>
-      // Function to initialize the DICOM viewer
-      function initializeDicomViewer() {
-        console.log('Initializing DICOM viewer...');
-    
-        // Get the DICOM viewer element
-        const dicomViewerElement = document.getElementById('dicomViewer');
-        console.log('Getting DICOM viewer...');
-    
-        // Check if the DICOM viewer element exists
-        if (!dicomViewerElement) {
-          console.error('dicomViewerElement not found.');
-          return;
-        }
-    
-        // Enable the DICOM viewer
-        cornerstone.enable(dicomViewerElement);
-        console.log('Enable DICOM viewer...');
-    
-        // Handle the close button click
-        $('#closeDicomViewer').on('click', function () {
-          $('#dicomViewerModal').hide();
-    
-          // Clear the DICOM viewer
-          cornerstone.disable(dicomViewerElement);
+      $(document).ready(function () {
+        let popupTimer;
+
+        $(".openClinicalHistoryButton").hover(
+          function (event) {
+            // Show the clinical history data in a separate popup
+            const clinicalHistoryData = $(this).data("clinical-history");
+            showPopup("Clinical History", clinicalHistoryData, event);
+          },
+          function () {
+            // Hide the popup after a short delay
+            popupTimer = setTimeout(hidePopup, 300); // Adjust the delay as needed
+          }
+        );
+
+        $(".openClinicalHistoryButton").mousemove(function (event) {
+          // Clear the existing timer to prevent premature hiding
+          clearTimeout(popupTimer);
+
+          // Position the popup next to the cursor
+          positionPopup(event);
         });
+
+        function showPopup(title, content, event) {
+          const popup = $("#clinicalHistoryPopup");
+          const popupContent = $(".popup-content");
+
+          // Set the title and content of the popup
+          popupContent.html(`${content}`);
+
+          // Position and display the small popup above the cursor
+          positionPopup(event);
+          popup.fadeIn();
+        }
+
+        function hidePopup() {
+          // Hide the popup
+          const popup = $("#clinicalHistoryPopup");
+          popup.fadeOut();
+        }
+
+        function positionPopup(event) {
+          // Position the small popup above the cursor
+          const popup = $("#clinicalHistoryPopup");
+          popup.css({
+            top: event.pageY - popup.outerHeight() - 10, // Adjust the offset as needed
+            left: event.pageX + 10, // Add an offset from the cursor
+          });
+        }
+      });
+
+
+      // Function to update the counts of rows with 'Report' and 'Reported' button states
+      function updateRowCounts() {
+        const totalRowCount = $("#patientTable tbody tr").length;
+        const reportedRowCount = $(
+          '#patientTable tbody tr .reportButton:contains("Reported")'
+        ).length;
+    
+        // Update the counts on the web page
+        $("#totalRowCount").text(totalRowCount);
+        $("#reportedRowCount").text(reportedRowCount);
       }
     
-      // Event handler for the "Open" button click
-      $('.openDicomButton').on('click', function (e) {
-        console.log('Intializing open button...');
-        e.preventDefault();
-        console.log('open button working...');
-    
-        // Get the DICOM file path from the data attribute
-        const dicomFilePath = $(this).data('dicom-file');
-        console.log('getting DICOM path...');
-    
-        // Show the DICOM viewer modal
-        $('#dicomViewerModal').show();
-    
-        // Load the DICOM image
-        cornerstoneWADOImageLoader.wadouri.dataSetCacheManager.loadDicom(dicomFilePath)
-          .then(function (dicomImage) {
-            // Get the DICOM viewer element
-            const dicomViewerElement = document.getElementById('dicomViewer');
-    
-            // Check if the DICOM viewer element exists
-            if (!dicomViewerElement) {
-              console.error('dicomViewerElement not found.');
-              return;
-            }
-    
-            // Display the DICOM image
-            cornerstone.displayImage(dicomViewerElement, dicomImage);
-          })
-          .catch(function (error) {
-            console.error('Error loading DICOM image:', error);
-          });
-      });
-    
-      // Call the initializeDicomViewer function when the document is ready
+      // Call the updateRowCounts function when the document is ready
       $(document).ready(function () {
-        initializeDicomViewer();
-        console.log('loading DICOM viewer...');
+        updateRowCounts();
       });
     </script>
     
@@ -564,128 +692,34 @@
     </script>
 
     <script>
-        function changeButtonColor(anchor) {
-            const button = $(anchor); // Convert the anchor to a jQuery object
-            const PatientId = String(button.data("patient-id")).trim(); // Remove leading and trailing spaces
-            const patientName = String(button.data("patientname")).trim();
-            const age = String(button.data("age")).trim();
-            const gender = String(button.data("gender")).trim();
-            const testDate = String(button.data("testdate")).trim();
-            const reportDate = String(button.data("reportdate")).trim();
-            const reportImage = String(button.data("reportimage")).trim();
+      function changeButtonColor(anchor) {
+        const button = $(anchor); // Convert the anchor to a jQuery object
+        const PatientId = String(button.data("patient-id")).trim(); // Remove leading and trailing spaces
+        const patientName = String(button.data("patientname")).trim();
+        const age = String(button.data("age")).trim();
+        const gender = String(button.data("gender")).trim();
+        const testDate = String(button.data("testdate")).trim();
+        const reportDate = String(button.data("reportdate")).trim();
+        const reportImage = String(button.data("reportimage")).trim();
   
-            if (!button.hasClass("reported")) {
-             // If the button is not in 'reported' state, change its style
-             button.addClass("reported");
-             // Change the button text
-             button.text("Reported");
-  
-            // Construct the URL with query parameters
-            const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
-  
-            // Redirect to the desired URL
-            window.location.href = redirectURL;
-            }
+        // Check the isDone status
+        if (isDone) {
+          // If isDone is true, the button should already be in 'reported' state
+          return;
         }
-    </script>
 
-    <script>
-      // Function to initialize the button states and row order based on Django session
-      function initializeButtonStates() {
-        $(".reportButton").each(function () {
-          const button = $(this);
-          const patientId = button.data("patient-id");
-          const buttonState = sessionStorage.getItem(
-            `reportButtonState_${patientId}`
-          );
-
-          if (buttonState === "reported") {
-            // If the button state is 'reported', update the button text
-            button.text("Reported");
-
-            // Move the row to the bottom
-            const row = $(`#${patientId}`);
-            row.detach().appendTo($("#patientTable tbody"));
-          }
-        });
-
-        // Update the counts
-        updateRowCounts();
-      }
-
-      // Function to update the counts of rows with 'Report' and 'Reported' button states
-      function updateRowCounts() {
-        const totalRowCount = $("#patientTable tbody tr").length;
-        const reportRowCount = $(
-          '#patientTable tbody tr .reportButton:contains("Report")'
-        ).length;
-        const reportedRowCount = $(
-          '#patientTable tbody tr .reportButton:contains("Reported")'
-        ).length;
-
-        // Update the counts on the web page
-        $("#totalRowCount").text(totalRowCount);
-        $("#reportRowCount").text(reportRowCount);
-        $("#reportedRowCount").text(reportedRowCount);
-      }
-
-      // Event handler for the "Report" button click
-      $(".reportButton").click(function (e) {
-        e.preventDefault(); // Prevent the default link behavior
-
-        const button = $(this);
-        const patientId = button.data("patient-id");
-        const currentState = sessionStorage.getItem(
-          `reportButtonState_${patientId}`
-        );
-
-        if (currentState !== "reported") {
-          // If the button is not in 'reported' state, change it to 'reported'
+          // If the button is not in 'reported' state, change its style
+          button.addClass("reported");
+          // Change the button text
           button.text("Reported");
-          sessionStorage.setItem(`reportButtonState_${patientId}`, "reported");
-
-          // Move the row to the bottom
-          const row = $(`#${patientId}`);
-          row.detach().appendTo($("#patientTable tbody"));
-
-          // Update the counts
-          updateRowCounts();
-
-          // Perform any other action here (e.g., send data to the server)
-          console.log("Sending patient ID to the Reporting Bot:", patientId);
-
-          // You can also open a modal or perform other actions as needed
-        }
-      });
-
-      // Call the initializeButtonStates function when the document is ready
-      $(document).ready(function () {
-        initializeButtonStates();
-      });
+  
+        // Construct the URL with query parameters
+        const redirectURL = reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage};
+  
+        // Redirect to the desired URL
+        window.location.href = redirectURL;
+      }
     </script>
-
-    <!-- <script>
-        // Your React component to handle the "Report" button click
-        class ReportButtonHandler extends React.Component {
-            handleReportButtonClick = (event) => {
-                const patientId = event.currentTarget.getAttribute('data-patient');
-                // Send the patientId to the Reporting Bot using fetch() or perform any other action
-                console.log('Sending patient ID to the Reporting Bot:', patientId);
-                // You can also open a modal or perform any other action as needed
-            };
-    
-            render() {
-                return (
-                    <table>
-                        {/* Table content (same as your Django template) */}
-                    </table>
-                );
-            }
-        }
-    
-        // Mount the React component to the DOM
-        ReactDOM.render(<ReportButtonHandler />, document.getElementById('reportingBotContainer'));
-    </script> -->
 
     <script>
       function callGoogleDrive() {
@@ -786,43 +820,8 @@
 
             // Hide rows that do not match the selected date
             $("tbody tr").each(function () {
-              var rowDate = $(this).find("td:nth-child(6)").text();
+              var rowDate = $(this).find("td:nth-child(5)").text();
               if (formatDate(rowDate) !== selectedDateFormatted) {
-                $(this).hide();
-              }
-            });
-          }
-        }
-
-        // Function to filter the table by cardiologist
-        function filterTableByCardiologist(cardiologist) {
-          // Show all rows initially
-          $("tbody tr").show();
-
-          if (cardiologist) {
-            // Filter rows based on the selected cardiologist
-            $("tbody tr").each(function () {
-              var rowCardiologistFirst = $(this).data("cardiologist-first");
-              var rowCardiologistLast = $(this).data("cardiologist-last");
-              var rowCardiologist =
-                rowCardiologistFirst + " " + rowCardiologistLast;
-              if (rowCardiologist !== cardiologist) {
-                $(this).hide();
-              }
-            });
-          }
-        }
-
-        function filterTableByLocation(location) {
-          // Show all rows initially
-          $("tbody tr").show();
-
-          if (location) {
-            // Filter rows based on the selected location
-            $("tbody tr").each(function () {
-              var rowCity = $(this).find("td:nth-child(8)").text().trim();
-              var rowLocation = $(this).find("td:nth-child(9)").text().trim();
-              if (rowCity !== location && rowLocation !== location) {
                 $(this).hide();
               }
             });

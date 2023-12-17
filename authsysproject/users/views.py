@@ -49,6 +49,7 @@ from users.models.Date import Date
 from datetime import datetime
 from users.models.Location import Location
 from users.models.City import City
+from django.views.decorators.http import require_POST
 
 def login(request):
     if request.method == 'POST':
@@ -83,13 +84,21 @@ def logout(request):
 
 def allocation(request):
     patients = PatientDetails.objects.all()
-    unique_date = Date.objects.all()
+    unique_dates = set()
+    for patient in patients:
+        unique_dates.add(patient.date.date_field)
+    sorted_unique_dates = sorted(unique_dates, reverse=False)
+    formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
     unique_location = Location.objects.all()
-    return render(request, 'users/allocation.html', {'patients': patients, 'Date': unique_date, "Location": unique_location})
+    return render(request, 'users/allocation.html', {'patients': patients, 'Date': formatted_dates, "Location": unique_location})
 
 def xrayallocation(request):
-    patients = DICOMData.objects.all()
-    return render(request, 'users/xrayallocation.html', {'patients': patients})
+    patients = DICOMData.objects.all().order_by('study_date')
+    unique_dates = set()
+    for patient in patients:
+        unique_dates.add(patient.study_date)
+    sorted_unique_dates = sorted(unique_dates, reverse=False)
+    return render(request, 'users/xrayallocation.html', {'patients': patients, 'Date': sorted_unique_dates})
 
 @login_required
 def audiometry(request):
@@ -1007,18 +1016,23 @@ def upload_dicom(request):
 
             # Extract metadata
             dicom_data = dcmread(dicom_instance.dicom_file.path)
-            dicom_instance.patient_name = str(dicom_data.PatientName)
+            print(dicom_data)
             dicom_instance.patient_id = str(dicom_data.PatientID)
-            # Additional fields
-            dicom_instance.age = dicom_data.PatientAge
-            # dicom_instance.gender = dicom_data.PatientSex
-            # Convert 'M' to 'Male' and 'F' to 'Female'
+            dicom_instance.patient_name = str(dicom_data.PatientName)
+            age = str(dicom_data.PatientAge).split("Y")[0]
+            if age.startswith('0'):
+                dicom_instance.age = age.split("0")[1]
+            else:
+                dicom_instance.age = age
+
             dicom_instance.gender = 'Male' if dicom_data.PatientSex.upper() == 'M' else 'Female'
+            dicom_instance.notes = request.POST.get("note")
+            dicom_instance.save()
 
             # Format the study_date as "date/month/year"
             if dicom_data.StudyDate:
                 datetime_obj = datetime.strptime(dicom_data.StudyDate, "%Y%m%d")
-                dicom_instance.study_date = datetime_obj.strftime("%d/%m/%Y")
+                dicom_instance.study_date = datetime_obj.strftime("%Y-%m-%d")
             else:
                 dicom_instance.study_date = None
 
@@ -1045,6 +1059,30 @@ def upload_dicom(request):
     else:
         form = DICOMDataForm()
 
-    return render(request, 'users/upload_dicom.html', {'form': form})        
+    return render(request, 'users/upload_dicom.html', {'form': form})  
+
+
+
+
+@require_POST
+def update_patient_done_status(request, patient_id):
+    try:
+        patient = PatientDetails.objects.get(PatientId=patient_id)
+        patient.isDone = True
+        patient.save()
+        return JsonResponse({'success': True})
+    except PatientDetails.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Patient not found'})
+    
+
+@require_POST
+def update_patient_done_status_xray(request, patient_id):
+    try:
+        patient = DICOMData.objects.get(patient_id=patient_id)
+        patient.isDone = True
+        patient.save()
+        return JsonResponse({'success': True})
+    except DICOMData.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Patient not found'})
 
 

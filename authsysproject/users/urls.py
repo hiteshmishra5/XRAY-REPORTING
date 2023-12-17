@@ -38,5 +38,7 @@ urlpatterns = [
     path('googledrive/', views.Google.as_view(), name='upload_csv'),
     path('upload_dicom/', views.upload_dicom, name='upload_dicom'),
     path('upload_dicom.html', views.upload_dicom, name='upload_dicom'),
+    path('api/update_patient_done_status/<str:patient_id>/', views.update_patient_done_status, name='update_patient_done_status'),
+    path('api/update_patient_done_status_xray/<str:patient_id>/', views.update_patient_done_status_xray, name='update_patient_done_status_xray'),
 
 ]

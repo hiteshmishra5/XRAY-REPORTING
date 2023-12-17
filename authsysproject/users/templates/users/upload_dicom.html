@@ -20,6 +20,16 @@
       text-align: center; /* Center align the form content */
     }
 
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical; /* Allow vertical resizing */
+    }
+
     button {
       background-color: #4CAF50;
       color: white;
@@ -27,6 +37,7 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     a {
@@ -80,6 +91,7 @@
     <form method="post" enctype="multipart/form-data" action="{% url 'upload_dicom' %}">
       {% csrf_token %}
       {{ form.as_p }}
+      <textarea name="note" id="note" placeholder="Enter clinical note"></textarea>
       <button type="submit">Upload</button>
     </form>
     {% if messages %}

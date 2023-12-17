@@ -514,9 +514,12 @@
                       data-testdate="{{ patient.TestDate }}"
                       data-reportdate="{{ patient.ReportDate }}"
                       data-reportimage="{{ patient.reportimage }}"
-                      onclick="changeButtonColor(this);"
-                    >
+                      onclick="changeButtonColor(this);">
+                      {% if patient.isDone %}
                       Report
+                      {% else %}
+                      Report
+                      {% endif %}
                     </a>
                   </td>
                 </tr>
@@ -566,130 +569,56 @@
     </script>
 
     <script>
-        function changeButtonColor(anchor) {
-            const button = $(anchor); // Convert the anchor to a jQuery object
-            const PatientId = String(button.data("patient-id")).trim(); // Remove leading and trailing spaces
-            const patientName = String(button.data("patientname")).trim();
-            const age = String(button.data("age")).trim();
-            const gender = String(button.data("gender")).trim();
-            const heartRate = String(button.data("heartrate")).trim();
-            const PRInterval = String(button.data("printerval")).trim();
-            const testDate = String(button.data("testdate")).trim();
-            const reportDate = String(button.data("reportdate")).trim();
-            const reportImage = String(button.data("reportimage")).trim();
-  
-            if (!button.hasClass("reported")) {
-             // If the button is not in 'reported' state, change its style
-             button.addClass("reported");
-             // Change the button text
-             button.text("Reported");
-  
-            // Construct the URL with query parameters
-            const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
-  
-            // Redirect to the desired URL
-            window.location.href = redirectURL;
-            }
-        }
-    </script>
+    // Function to update the counts of rows with 'Report' and 'Reported' button states
+    function updateRowCounts() {
+      const totalRowCount = $("#patientTable tbody tr").length;
+      const reportedRowCount = $(
+        '#patientTable tbody tr .reportButton:contains("Reported")'
+      ).length;
 
-    <script>
-      // Function to initialize the button states and row order based on Django session
-      function initializeButtonStates() {
-        $(".reportButton").each(function () {
-          const button = $(this);
-          const patientId = button.data("patient-id");
-          const buttonState = sessionStorage.getItem(
-            `reportButtonState_${patientId}`
-          );
+      // Update the counts on the web page
+      $("#totalRowCount").text(totalRowCount);
+      $("#reportedRowCount").text(reportedRowCount);
+    }
 
-          if (buttonState === "reported") {
-            // If the button state is 'reported', update the button text
-            button.text("Reported");
+    // Call the updateRowCounts function when the document is ready
+    $(document).ready(function () {
+      updateRowCounts();
+    });
+  </script>
 
-            // Move the row to the bottom
-            const row = $(`#${patientId}`);
-            row.detach().appendTo($("#patientTable tbody"));
-          }
-        });
+   <script>
 
-        // Update the counts
-        updateRowCounts();
+    function changeButtonColor(anchor) {
+      const button = $(anchor); // Convert the anchor to a jQuery object
+      const PatientId = String(button.data("patient-id")).trim(); // Remove leading and trailing spaces
+      const patientName = String(button.data("patientname")).trim();
+      const age = String(button.data("age")).trim();
+      const gender = String(button.data("gender")).trim();
+      const heartRate = String(button.data("heartrate")).trim();
+      const PRInterval = String(button.data("printerval")).trim();
+      const testDate = String(button.data("testdate")).trim();
+      const reportDate = String(button.data("reportdate")).trim();
+      const reportImage = String(button.data("reportimage")).trim();
+
+      // Check the isDone status
+      if (isDone) {
+        // If isDone is true, the button should already be in 'reported' state
+        return;
       }
 
-      // Function to update the counts of rows with 'Report' and 'Reported' button states
-      function updateRowCounts() {
-        const totalRowCount = $("#patientTable tbody tr").length;
-        const reportRowCount = $(
-          '#patientTable tbody tr .reportButton:contains("Report")'
-        ).length;
-        const reportedRowCount = $(
-          '#patientTable tbody tr .reportButton:contains("Reported")'
-        ).length;
+      // If the button is not in 'reported' state, change its style
+      button.addClass("reported");
+      // Change the button text
+      button.text("Reported");
 
-        // Update the counts on the web page
-        $("#totalRowCount").text(totalRowCount);
-        $("#reportRowCount").text(reportRowCount);
-        $("#reportedRowCount").text(reportedRowCount);
-      }
+      // Construct the URL with query parameters
+      const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
 
-      // Event handler for the "Report" button click
-      $(".reportButton").click(function (e) {
-        e.preventDefault(); // Prevent the default link behavior
-
-        const button = $(this);
-        const patientId = button.data("patient-id");
-        const currentState = sessionStorage.getItem(
-          `reportButtonState_${patientId}`
-        );
-
-        if (currentState !== "reported") {
-          // If the button is not in 'reported' state, change it to 'reported'
-          button.text("Reported");
-          sessionStorage.setItem(`reportButtonState_${patientId}`, "reported");
-
-          // Move the row to the bottom
-          const row = $(`#${patientId}`);
-          row.detach().appendTo($("#patientTable tbody"));
-
-          // Update the counts
-          updateRowCounts();
-
-          // Perform any other action here (e.g., send data to the server)
-          console.log("Sending patient ID to the Reporting Bot:", patientId);
-
-          // You can also open a modal or perform other actions as needed
-        }
-      });
-
-      // Call the initializeButtonStates function when the document is ready
-      $(document).ready(function () {
-        initializeButtonStates();
-      });
-    </script>
-
-    <!-- <script>
-        // Your React component to handle the "Report" button click
-        class ReportButtonHandler extends React.Component {
-            handleReportButtonClick = (event) => {
-                const patientId = event.currentTarget.getAttribute('data-patient');
-                // Send the patientId to the Reporting Bot using fetch() or perform any other action
-                console.log('Sending patient ID to the Reporting Bot:', patientId);
-                // You can also open a modal or perform any other action as needed
-            };
-    
-            render() {
-                return (
-                    <table>
-                        {/* Table content (same as your Django template) */}
-                    </table>
-                );
-            }
-        }
-    
-        // Mount the React component to the DOM
-        ReactDOM.render(<ReportButtonHandler />, document.getElementById('reportingBotContainer'));
-    </script> -->
+      // Redirect to the desired URL
+      window.location.href = redirectURL;
+    }
+  </script>
 
     <script>
       function callGoogleDrive() {

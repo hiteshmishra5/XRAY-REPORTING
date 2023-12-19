@@ -519,6 +519,9 @@ GetDivContentOnPDF() {
 GetEcgContentOnPDF() {
   var filename = this.createFilename();
   const data = document.getElementsByClassName('ck-editor__editable')[0];
+  const table = data.querySelector('table');
+  data.classList.add("ck-blurred");
+  data.classList.remove("ck-focused");
 
   // Create a function to load images and render PDF
   const loadImageAndRenderPDF = async () => {
@@ -578,9 +581,33 @@ GetEcgContentOnPDF() {
         graphCtx.drawImage(image, -graphCanvas.height / 2, -graphCanvas.width / 2, graphCanvas.height, graphCanvas.width);
 
         pdf.addImage(graphCanvas.toDataURL('image/png'), 'PNG', 0, 0, a4Width, a4Height);
-        
+
         pdf.addPage("a4", "portrait"); // Add a new portrait-oriented page
         pdf.addImage(imgData, 'PNG', xPosition, yPosition, pdfImageWidth, pdfImageHeight);
+
+        // added for selectable text
+        // Calculate the position to place the text at the bottom
+      const textX = 40;
+      const textY = 841.89 - 2; // 20 points from the bottom
+
+      // If a table exists within the ck-editor__editable div, capture its text content
+      if (table) {
+        const tableText = table.textContent || '';
+
+        // Add the table text as text (preserve original formatting)
+        pdf.setFontSize(2); // Adjust the font size as needed
+        pdf.text(textX, textY, tableText);
+      }
+
+      // If the ck-editor__editable div contains paragraphs, capture the text from the first paragraph
+      const paragraphs = data.querySelectorAll('p');
+      if (paragraphs.length > 0) {
+        const firstParagraphText = paragraphs[0].textContent || '';
+
+        // Add the first paragraph text as text (preserve original formatting)
+        pdf.setFontSize(2); // Adjust the font size as needed
+        pdf.text(textX, textY - 2, firstParagraphText); // Place it above the table text
+      }
 
         pdf.save(filename ? filename + ".pdf" : "download.pdf");
       };

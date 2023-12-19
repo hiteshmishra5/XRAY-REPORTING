@@ -443,6 +443,8 @@ class App extends Component {
 // }
 
 ////////////////////////////////// Another one ////////////////////////
+//
+
 GetDivContentOnPDF() {
   var filename = this.createFilename();
   const data = document.getElementsByClassName('ck-editor__editable')[0];
@@ -459,17 +461,15 @@ GetDivContentOnPDF() {
       scale: 4, // Adjust the scale if needed for better image quality
       useCORS: true, // Added to address potential CORS issues
     }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png', 1.0);
-
       // Calculate the position to center the image
       const imgWidth = 595.28 - 40; // Adjusted width to leave some margin
       const imgHeight = (imgWidth * 1.5) - 40; // Adjusted height to maintain aspect ratio and leave margin
       const imgX = (595.28 - imgWidth) / 2;
       const imgY = (841.89 - imgHeight) / 2;
 
-      // Add the image to the PDF
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
-      pdf.setTextColor(255, 255, 255);
+      // Add the image to the PDF with the initial size
+      pdf.addImage(canvas, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
       // Calculate the position to place the text at the bottom
       const textX = 40;
       const textY = 841.89 - 2; // 20 points from the bottom
@@ -495,6 +495,21 @@ GetDivContentOnPDF() {
 
       // Save the PDF
       pdf.save(filename ? filename + ".pdf" : "download.pdf");
+
+      // Modify the size of the last added image within .ck-content .image
+      const images = data.querySelectorAll('.ck-content .image img');
+      const lastImage = images[images.length - 1]; // Select the last image from the NodeList
+
+      if (lastImage) {
+        const smallerWidth = lastImage.width / 4;
+        const smallerHeight = lastImage.height / 4;
+
+        // Convert the last image to a data URI with the modified size
+        const lastImageDataURI = lastImage.toDataURL('image/jpg', 1.0);
+
+        // Add the last image again with the modified size
+        pdf.addImage(lastImageDataURI, 'PNG', imgX, imgY + 100, smallerWidth, smallerHeight);
+      }
     });
   }
 }

@@ -547,13 +547,13 @@
                   <td>
                     <a
                       class="reportButton"
-                      href="reporting-bot?data-patientid={{ patient.patient_id }}&data-patientname={{ patient.patient_name }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-testdate={{ patient.study_date }}&data-reportdate={{ patient.study_date }}&data-reportimage={% get_media_prefix %}{{ patient.jpeg_file }}"
+                      href="reporting-bot?data-patientid={{ patient.patient_id }}&data-patientname={{ patient.patient_name }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-testdate={{ patient.study_date }}&data-reportdate={% now 'Y-m-d' %}&data-reportimage={% get_media_prefix %}{{ patient.jpeg_file }}"
                       data-patient-id="{{ patient.patient_id }}"
                       data-patientname="{{ patient.patient_name }}"
                       data-age="{{ patient.age }}"
                       data-gender="{{ patient.gender }}"
                       data-testdate="{{ patient.study_date }}"
-                      data-reportdate="{{ patient.study_date }}"
+                      data-reportdate="{% now 'Y-m-d' %}"
                       data-reportimage="{% get_media_prefix %}{{ patient.jpeg_file }}"
                       data-dicom-file="{% get_media_prefix %}{{ patient.dicom_file }}"
                       onclick="changeButtonColor(this);">
@@ -714,7 +714,7 @@
           button.text("Reported");
   
         // Construct the URL with query parameters
-        const redirectURL = reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage};
+        const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
   
         // Redirect to the desired URL
         window.location.href = redirectURL;

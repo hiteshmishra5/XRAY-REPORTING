@@ -885,7 +885,7 @@ def GoogleDrive():
         return service
 
     # folder_id = '1RjxYJcv4vbv1WFfcUtCWm-qh0N3KRd0n'
-    folder_id = '1RjxYJcv4vbv1WFfcUtCWm-qh0N3KRd0n'
+    folder_id = '1DweRTm3gIqnbbYQxi-0gCtO-0IDLyTY1'
     service = create_service()
 
     existing_patient_ids = set(PatientDetails.objects.values_list('PatientId', flat=True))
@@ -943,7 +943,7 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
                             if patient_id == '':
                                 patient_id = str(first_page_text).split("Comments")[1].split("HR")[0].strip()
 
-                            if patient_id not in existing_patient_ids:
+                            if patient_id not in existing_patient_ids and patient_id != '':
                                 patient_name = str(first_page_text).split("Name :")[1].split("Age :")[0].split('\n')[0]
                                 patient_age = str(first_page_text).split("Age :")[1].split(" ")[1].split("\n")[0]
                                 patient_gender = str(first_page_text).split("Gender :")[1].split("\n")[0]
@@ -1078,7 +1078,7 @@ def update_patient_done_status(request, patient_id):
 @require_POST
 def update_patient_done_status_xray(request, patient_id):
     try:
-        patient = DICOMData.objects.get(patient_id=patient_id)
+        patient = get_object_or_404(DICOMData, patient_id=patient_id)
         patient.isDone = True
         patient.save()
         return JsonResponse({'success': True})

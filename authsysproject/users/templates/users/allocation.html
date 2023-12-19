@@ -1,574 +1,585 @@
 <!DOCTYPE html>
 <html>
-  {% load tz %} {% load static %}
+{% load tz %} {% load static %}
 
-  <head>
-    <title>XRAi Allocation</title>
-    <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        min-height: 100vh;
-        flex-direction: column;
-      }
+<head>
+  <title>XRAi Allocation</title>
+  <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
 
-      .container {
-        margin: 0 auto;
-        width: 100%;
-        max-width: 100%;
-        padding-left: 5px;
-        padding-right: 5px;
-      }
+    .container {
+      margin: 0 auto;
+      width: 100%;
+      max-width: 100%;
+      padding-left: 5px;
+      padding-right: 5px;
+    }
 
-      .card {
-        border: none;
-        border-radius: 7px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-bottom: 3px;
-        position: sticky;
-        top: 0;
-        z-index: 1;
-        background-color: #fff;
-      }
+    .card {
+      border: none;
+      border-radius: 7px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 3px;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background-color: #fff;
+    }
 
-      .card-body {
-        padding: 10px;
-      }
+    .card-body {
+      padding: 10px;
+    }
 
-      #count1 {
-        padding: 10px;
-        font-size: 25px;
-        color: black;
-      }
-      #count2 {
-        padding: 10px;
-        font-size: 25px;
-        color: black;
-      }
-      #totalRowCount {
-        color: orange;
-      }
-      #reportedRowCount {
-        color: green;
-      }
+    #count1 {
+      padding: 10px;
+      font-size: 25px;
+      color: black;
+    }
 
-      .header {
-        margin-bottom: 5px;
-        background-color: #fff;
-        z-index: 10;
-        position: sticky;
-        top: 60px;
-      }
+    #count2 {
+      padding: 10px;
+      font-size: 25px;
+      color: black;
+    }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: #ccc;
-      }
+    #totalRowCount {
+      color: orange;
+    }
 
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
-        border-bottom: 1px solid #ccc;
-      }
+    #reportedRowCount {
+      color: green;
+    }
 
-      th:last-child,
-      td:last-child {
-        border-right: none;
-      }
+    .header {
+      margin-bottom: 5px;
+      background-color: #fff;
+      z-index: 10;
+      position: sticky;
+      top: 60px;
+    }
 
-      th:first-child,
-      td:first-child {
-        position: sticky;
-        left: 0;
-        background-color: #fff;
-        z-index: 1;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ccc;
+    }
 
-      td:first-child {
-        z-index: 2;
-      }
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ccc;
+    }
 
-      .table-container {
-        height: 100%;
-        overflow-y: auto;
-      }
+    th:last-child,
+    td:last-child {
+      border-right: none;
+    }
 
-      .dropdown-select {
-        position: relative;
-      }
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      background-color: #fff;
+      z-index: 1;
+    }
 
-      .dropdown-select select {
-        width: 100%;
-        padding: 5px;
-        font-size: 14px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
+    td:first-child {
+      z-index: 2;
+    }
 
-      .dropdown-select select:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px #007bff;
-      }
+    .table-container {
+      height: 100%;
+      overflow-y: auto;
+    }
 
-      .dropdown-select1 {
-        position: relative;
-      }
+    .dropdown-select {
+      position: relative;
+    }
 
-      .dropdown-select1 select {
-        width: 70%;
-        padding: 5px;
-        font-size: 12px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
+    .dropdown-select select {
+      width: 100%;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-      .dropdown-select1 select:focus {
-        outline: none;
-        border-color: #007bff;
-        box-shadow: 0 0 5px #007bff;
-      }
+    .dropdown-select select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px #007bff;
+    }
 
-      .greeting {
-        margin-top: 18px;
-        text-align: right;
-        font-weight: bold;
-        float: right;
-        color: black;
-      }
+    .dropdown-select1 {
+      position: relative;
+    }
 
-      .search-container {
-        margin-top: 7px;
-        margin-right: 270px;
-        font-weight: bold;
-        float: right;
-        position: sticky;
-        display: flex;
-        justify-content: center;
-      }
+    .dropdown-select1 select {
+      width: 70%;
+      padding: 5px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
 
-      .footer {
-        background-color: #f7f7f7;
-        padding: 10px 0;
-        text-align: center;
-        margin-top: auto;
-      }
+    .dropdown-select1 select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px #007bff;
+    }
 
-      .filter-dropdown-container {
-        display: flex;
-        align-items: center;
-      }
+    .greeting {
+      margin-top: 18px;
+      text-align: right;
+      font-weight: bold;
+      float: right;
+      color: black;
+    }
 
-      .filter-dropdown-container > div {
-        margin-right: 10px; /* Adjust this value to control the space between the "Date" header and the dropdown */
-      }
+    .search-container {
+      margin-top: 7px;
+      margin-right: 270px;
+      font-weight: bold;
+      float: right;
+      position: sticky;
+      display: flex;
+      justify-content: center;
+    }
 
-      .reportButton {
-        color: white;
-        background-color: #ffa500; /* Blue color for the button */
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px; /* Adjust padding for button size */
-        font-size: 15px;
-        cursor: pointer;
-      }
-
-      .hidden-row {
-        display: none;
-      }
-
-      .btn-custom-sm {
-        padding: 5px;
-        font-size: 11px;
-        border-radius: 4px;
-        background-color: #ff0000;
-        color: #ffffff;
-        border: none;
-        cursor: pointer;
-      }
-
-      .scroll-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        display: none;
-      }
-
-      .scroll-to-top a {
-        display: block;
-        width: 40px;
-        height: 40px;
-        background-color: green;
-        border-radius: 50%;
-        color: #ffffff;
-        font-size: 20px;
-        text-align: center;
-        line-height: 40px;
-        text-decoration: none;
-      }
-
-      .refresh {
-        background-color: blue;
-        color: white;
-        padding: 3px 7px;
-        border: none;
-        border-radius: 5px;
-        font-size: 12px;
-      }
-
-      .popup {
-        display: none;
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background-color: orange;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px;
-        z-index: 1000;
-      }
-
-      .popup-content {
-        font-size: 14px;
-      }
-
-      /* Apply 3D effect on hover */
-      .unallocate-button {
-        transition: transform 0.3s;
-      }
-
-      .unallocate-button:hover {
-        transform: translateY(-3px) translateZ(0);
-        /* Adjust the values for the desired 3D effect */
-      }
-      .navbar {
-        background-color: #333;
-        color: #fff;
-        padding: 10px;
-        z-index: 999;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        border-radius: 5px;
-      }
-
-      .navbar ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
-
-      .navbar ul li {
-        display: inline;
-        margin-right: 10px;
-      }
-
-      .navbar ul li a {
-        color: #fff;
-        text-decoration: none;
-      }
-
-      .logout-button {
-        background-color: red;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-      }
-
-      .dropdown-toggle.btn {
-        background-color: white;
-        color: black;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-      }
-
-      .dropdown-menu {
-        background-color: white; /* Default background color */
-        color: black;
-        border: none;
-        border-radius: 5px;
-      }
-
-      .dropdown-menu.show {
-        background-color: #f1f1f1; /* Light gray background when dropdown is opened */
-      }
-
-      .dropdown-menu a {
-        color: black;
-        text-decoration: none;
-        display: block;
-        padding: 5px 10px;
-        transition: background-color 0.3s;
-      }
-
-      .dropdown-menu a:hover {
-        background-color: white; /* Light gray background on hover */
-        color: black;
-      }
-
-      .dropdown-menu a.active {
-        background-color: #f1f1f1; /* Light gray background on click */
-        color: black;
-      }
-      #patientTable {
-        width: 100vw;
-        background-color: white;
-        color: black;
-      }
-      #myInput {
-        padding: 5px;
-        font-size: 15px;
-        width: 230px;
-      }
-    .hidden {
-       display: none;
-     }
-     .dropdown-select {
-          position: relative;
-      }
-
-      .dropdown-select select {
-          width: 100%;
-          padding: 5px;
-          font-size: 14px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-      }
-
-      .dropdown-select select:focus {
-          outline: none;
-          border-color: #007bff;
-          box-shadow: 0 0 5px #007bff;
-      }
-
-       .dropdown-select1 {
-          position: relative;
-      }
-
-      .dropdown-select1 select {
-          width: 70%;
-          padding: 5px;
-          font-size: 12px;
-          border: 1px solid #ccc;
-          border-radius: 5px;
-      }
-
-      .dropdown-select1 select:focus {
-          outline: none;
-          border-color: #007bff;
-          box-shadow: 0 0 5px #007bff;
-      }
+    .footer {
+      background-color: #f7f7f7;
+      padding: 10px 0;
+      text-align: center;
+      margin-top: auto;
+    }
 
     .filter-dropdown-container {
-          display: flex;
-          align-items: center;
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-dropdown-container>div {
+      margin-right: 10px;
+      /* Adjust this value to control the space between the "Date" header and the dropdown */
+    }
+
+    .reportButton {
+      color: white;
+      background-color: #ffa500;
+      /* Blue color for the button */
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      /* Adjust padding for button size */
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .hidden-row {
+      display: none;
+    }
+
+    .btn-custom-sm {
+      padding: 5px;
+      font-size: 11px;
+      border-radius: 4px;
+      background-color: #ff0000;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .scroll-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      display: none;
+    }
+
+    .scroll-to-top a {
+      display: block;
+      width: 40px;
+      height: 40px;
+      background-color: green;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 20px;
+      text-align: center;
+      line-height: 40px;
+      text-decoration: none;
+    }
+
+    .refresh {
+      background-color: blue;
+      color: white;
+      padding: 3px 7px;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: orange;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      font-size: 14px;
+    }
+
+    /* Apply 3D effect on hover */
+    .unallocate-button {
+      transition: transform 0.3s;
+    }
+
+    .unallocate-button:hover {
+      transform: translateY(-3px) translateZ(0);
+      /* Adjust the values for the desired 3D effect */
+    }
+
+    .navbar {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      border-radius: 5px;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar ul li {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    .navbar ul li a {
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .logout-button {
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .dropdown-toggle.btn {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .dropdown-menu {
+      background-color: white;
+      /* Default background color */
+      color: black;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .dropdown-menu.show {
+      background-color: #f1f1f1;
+      /* Light gray background when dropdown is opened */
+    }
+
+    .dropdown-menu a {
+      color: black;
+      text-decoration: none;
+      display: block;
+      padding: 5px 10px;
+      transition: background-color 0.3s;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: white;
+      /* Light gray background on hover */
+      color: black;
+    }
+
+    .dropdown-menu a.active {
+      background-color: #f1f1f1;
+      /* Light gray background on click */
+      color: black;
+    }
+
+    #patientTable {
+      width: 100vw;
+      background-color: white;
+      color: black;
+    }
+
+    #myInput {
+      padding: 5px;
+      font-size: 15px;
+      width: 230px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .dropdown-select {
+      position: relative;
+    }
+
+    .dropdown-select select {
+      width: 100%;
+      padding: 5px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .dropdown-select select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px #007bff;
+    }
+
+    .dropdown-select1 {
+      position: relative;
+    }
+
+    .dropdown-select1 select {
+      width: 70%;
+      padding: 5px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .dropdown-select1 select:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px #007bff;
+    }
+
+    .filter-dropdown-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .filter-dropdown-container>div {
+      margin-right: 10px;
+      /* Adjust this value to control the space between the "Date" header and the dropdown */
+    }
+
+    .row-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
 
-      .filter-dropdown-container > div {
-          margin-right: 10px; /* Adjust this value to control the space between the "Date" header and the dropdown */
+      .count-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        background-color: skyblue;
+        border-radius: 10px;
+        font-family: 'Arial', sans-serif;
       }
 
-    </style>
-  </head>
+      #count1,
+      #count2,
+      .greeting {
+        margin-right: 10px;
+        margin-left:10px;
+        padding: 4px;
+        font-size: 16px;
+      }
 
-  <body>
-    <nav class="navbar">
-      <ul>
-        <li>
-          <a href="/allocation"><strong>XRAi Allocation</strong></a>
-        </li>
-      </ul>
-      <ul>
-        <li>
-          <a href="/logout"
-            ><button class="logout-button btn btn-sm">
-              <strong>Logout</strong>
-            </button></a
-          >
-        </li>
-      </ul>
-    </nav>
-    <div class="container">
-      <div id="popup-message" class="popup">
-        <span class="popup-content">Searching for updates...</span>
-      </div>
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
+      #totalRowCount, #reportedRowCount {
+        color: black;
+      }
+
+      #myInput {
+        padding: 8px;
+        font-size: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 250px;
+      }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <ul>
+      <li>
+        <a href="/allocation"><strong>XRAi Allocation</strong></a>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a href="/logout"><button class="logout-button btn btn-sm">
+            <strong>Logout</strong>
+          </button></a>
+      </li>
+    </ul>
+  </nav>
+  <div class="container">
+    <div id="popup-message" class="popup">
+      <span class="popup-content">Searching for updates...</span>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h1 class="header">
               <h1 class="header">
-                Patient Lists
-                <button type="button" class="refresh" onclick="refreshPage()">
-                  <i style="font-size: 19px" class="fa">&#xf021;</i>
-                </button>
-                <span id="count1">Total Cases: <span id="totalRowCount">0</span>
-                <span id="count2">Completed Cases: <span id="reportedRowCount">0</span>
-                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
-                <div class="greeting" id="greeting">
-                  {% if user %}
-                  <h6>
-                    <strong>{{ user.first_name }}</strong>,
-                    <span id="greeting-text"></span>
-                  </h6>
-                  {% endif %}
+                <div class="row-container">
+                  <div class="count-container">
+                    <span id="count1"><strong>Total Cases:</strong> <span id="totalRowCount">0</span></span>
+                    <span id="count2"><strong>Reported Cases:</strong> <span id="reportedRowCount">0</span></span>
+                  </div>
+                  <div class = 'search-google'>
+                      <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
+                      <button hidden type="button" class="refresh" onclick="refreshPage()">
+                        <i style="font-size: 19px" class="fa">&#xf021;</i>
+                      </button>
+                  </div>
+
+                  <div class="greeting" id="greeting">
+                    {% if user %}
+                    <h6>
+                      <strong>{{ user.first_name }}</strong>,
+                      <span id="greeting-text"></span>
+                    </h6>
+                    {% endif %}
+                  </div>
                 </div>
               </h1>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <div class="table-container">
-            <table id="patientTable">
-              <thead>
-                <tr>
-                  <th>Patient ID</th>
-                  <th>Patient Name</th>
-                  <th>Age</th>
-                  <th>Gender</th>
-                  <th>Heart Rate</th>
-                  <th class='hidden interval'>PR Interval</th>
-                  <th>
-                      <div class="filter-dropdown-container">
-                          <div>Test Date</div>
-                          <div class="dropdown-select1" id="filter-date-dropdown-date">
-                              <select id="filter-date-select-date" class="form-control">
-                                  <option value="">All</option>
-                                  {% for date in Date %}
-                                      <option value="{{ date }}">{{ date }}</option>
-                                  {% endfor %}
-                              </select>
-                          </div>
-                      </div>
-                  </th>
-                  <th>
-                      <div class="filter-dropdown-container">
-                          <div>Location</div>
-                          <div class="dropdown-select1" id="filter-location-dropdown">
-                              <select id="filter-location-select-location" class="form-control">
-                                  <option value="">All</option>
-                                  {% for location in Location %}
-                                  <option value="{{ location }}" data-city="{{ location.name }}">{{ location }}</option>
-                                  {% endfor %}
-                              </select>
-                          </div>
-                      </div>
-                  </th>
-
-                  <th class='hidden report'>Report Date</th>
-                  <th>Image</th>
-                  <th>Actions</th>
-                  <!-- Add a column for the "Report" button -->
-                </tr>
-              </thead>
-              <tbody>
-                {% for patient in patients %}
-                <tr class="patientRow" id="{{ patient.PatientId }}">
-                  <td>{{ patient.PatientId }}</td>
-                  <td>{{ patient.PatientName }}</td>
-                  <td>{{ patient.age }}</td>
-                  <td>{{ patient.gender }}</td>
-                  <td>{{ patient.HeartRate }}</td>
-                  <td class='hidden interval'>{{ patient.PRInterval }}</td>
-                  <td>{{ patient.TestDate }}</td>
-                  <td>{{ patient.date.location.name }}</td>
-                  <td class='hidden report'>{{ patient.ReportDate }}</td>
-                  <td>
-                    <a
-                      class="imageButton"
-                      target="_blank"
-                      href="{{ patient.reportimage }}"
-                    >
-                      Image
-                    </a>
-                  </td>
-                  <td>
-                    <a
-                      class="reportButton"
-                      href="reporting-bot?data-patientid={{ patient.PatientId }}&data-patientname={{ patient.PatientName }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-heartrate={{ patient.HeartRate }}&data-printerval={{patient.PRInterval}}&data-testdate={{ patient.TestDate }}&data-reportdate={{ patient.ReportDate }}&data-reportimage={{ patient.reportimage }}"
-                      data-patient-id="{{ patient.PatientId }}"
-                      data-patientname="{{ patient.PatientName }}"
-                      data-age="{{ patient.age }}"
-                      data-gender="{{ patient.gender }}"
-                      data-heartrate="{{ patient.HeartRate }}"
-                      data-printerval="{{ patient.PRInterval }}"
-                      data-testdate="{{ patient.TestDate }}"
-                      data-reportdate="{{ patient.ReportDate }}"
-                      data-reportimage="{{ patient.reportimage }}"
-                      onclick="changeButtonColor(this);">
-                      {% if patient.isDone %}
-                      Report
-                      {% else %}
-                      Report
-                      {% endif %}
-                    </a>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div id="reportingBotContainer"></div>
-
-          <div class="scroll-to-top">
-            <a href="#top"><i class="fa fa-arrow-up"></i></a>
+            </h1>
           </div>
         </div>
       </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <div class="card">
+      <div class="card-body">
+        <div class="table-container">
+          <table id="patientTable">
+            <thead>
+              <tr>
+                <th>Patient ID</th>
+                <th>Patient Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Heart Rate</th>
+                <th class='hidden interval'>PR Interval</th>
+                <th>
+                  <div class="filter-dropdown-container">
+                    <div>Test Date</div>
+                    <div class="dropdown-select1" id="filter-date-dropdown-date">
+                      <select id="filter-date-select-date" class="form-control">
+                        <option value="">All</option>
+                        {% for date in Date %}
+                        <option value="{{ date }}">{{ date }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </th>
+                <th>
+                  <div class="filter-dropdown-container">
+                    <div>Location</div>
+                    <div class="dropdown-select1" id="filter-location-dropdown">
+                      <select id="filter-location-select-location" class="form-control">
+                        <option value="">All</option>
+                        {% for location in Location %}
+                        <option value="{{ location }}" data-city="{{ location.name }}">{{ location }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                </th>
+
+                <th class='hidden report'>Report Date</th>
+                <th>Image</th>
+                <th>Actions</th>
+                <!-- Add a column for the "Report" button -->
+              </tr>
+            </thead>
+            <tbody>
+              {% for patient in patients %}
+              <tr class="patientRow" id="{{ patient.PatientId }}">
+                <td>{{ patient.PatientId }}</td>
+                <td>{{ patient.PatientName }}</td>
+                <td>{{ patient.age }}</td>
+                <td>{{ patient.gender }}</td>
+                <td>{{ patient.HeartRate }}</td>
+                <td class='hidden interval'>{{ patient.PRInterval }}</td>
+                <td>{{ patient.TestDate }}</td>
+                <td>{{ patient.date.location.name }}</td>
+                <td>
+                  <a class="imageButton" target="_blank" href="{{ patient.reportimage }}">
+                    Image
+                  </a>
+                </td>
+                <td>
+                  <a class="reportButton"
+                    href="reporting-bot?data-patientid={{ patient.PatientId }}&data-patientname={{ patient.PatientName }}&data-age={{ patient.age }}&data-gender={{ patient.gender }}&data-heartrate={{ patient.HeartRate }}&data-printerval={{patient.PRInterval}}&data-testdate={{ patient.TestDate }}&data-reportdate={% now 'Y-m-d' %}&data-reportimage={{ patient.reportimage }}"
+                    data-patient-id="{{ patient.PatientId }}" data-patientname="{{ patient.PatientName }}"
+                    data-age="{{ patient.age }}" data-gender="{{ patient.gender }}"
+                    data-heartrate="{{ patient.HeartRate }}" data-printerval="{{ patient.PRInterval }}"
+                    data-testdate="{{ patient.TestDate }}" data-reportdate="{% now 'Y-m-d' %}"
+                    data-reportimage="{{ patient.reportimage }}" data-is-done="{{ patient.isDone }}"
+                    onclick="changeButtonColor(this);">
+                    {% if patient.isDone %}
+                    Reported
+                    {% else %}
+                    Report
+                    {% endif %}
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div id="reportingBotContainer"></div>
+
+        <div class="scroll-to-top">
+          <a href="#top"><i class="fa fa-arrow-up"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-    <script>
-        function myFunction() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("patientTable");
-            tr = table.getElementsByTagName("tr");
-
-            for (i = 1; i < tr.length; i++) {
-                var found = false;
-                var columns = tr[i].getElementsByTagName("td");
-                for (var j = 0; j < columns.length - 1; j++) { // Exclude the last column (Actions)
-                    td = columns[j];
-                    if (td) {
-                        txtValue = td.textContent || td.innerText;
-                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if (found) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    </script>
-
-    <script>
+  <script>
     // Function to update the counts of rows with 'Report' and 'Reported' button states
     function updateRowCounts() {
       const totalRowCount = $("#patientTable tbody tr").length;
@@ -587,7 +598,7 @@
     });
   </script>
 
-   <script>
+  <script>
 
     function changeButtonColor(anchor) {
       const button = $(anchor); // Convert the anchor to a jQuery object
@@ -613,196 +624,229 @@
       button.text("Reported");
 
       // Construct the URL with query parameters
-      const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
+      const redirectURL = reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage};
 
       // Redirect to the desired URL
       window.location.href = redirectURL;
     }
   </script>
 
-    <script>
-      function callGoogleDrive() {
-        $.ajax({
-          type: "GET",
-          url: "/googledrive/",
-          success: function (response) {
-            console.log(response.message); // Handle the response from the server if needed
-          },
-          error: function () {
-            console.error("Failed to call GoogleDrive() function.");
-          },
-        });
+
+  <script>
+    function myFunction() {
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("patientTable");
+      tr = table.getElementsByTagName("tr");
+
+      for (i = 1; i < tr.length; i++) {
+        var found = false;
+        var columns = tr[i].getElementsByTagName("td");
+        for (var j = 0; j < columns.length - 1; j++) { // Exclude the last column (Actions)
+          td = columns[j];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              found = true;
+              break;
+            }
+          }
+        }
+        if (found) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
       }
+    }
+  </script>
 
-      function refreshPage() {
-        // Call GoogleDrive() before reloading the page
-        callGoogleDrive();
 
-        // Reload the page
+  <script>
+    function callGoogleDrive() {
+      $.ajax({
+        type: "GET",
+        url: "/googledrive/",
+        success: function (response) {
+          console.log(response.message); // Handle the response from the server if needed
+        },
+        error: function () {
+          console.error("Failed to call GoogleDrive() function.");
+        },
+      });
+    }
+
+    function refreshPage() {
+      // Call GoogleDrive() before reloading the page
+      callGoogleDrive();
+
+      // Reload the page
+      location.reload();
+
+      // Show the popup message
+      var popup = document.getElementById("popup-message");
+      popup.style.display = "block";
+
+      // Hide the popup after a certain time (e.g., 3 seconds)
+      setTimeout(function () {
+        popup.style.display = "none";
+      }, 3000); // 3000 milliseconds = 3 seconds
+
+      // Reload the page after 5 minutes (300000 milliseconds)
+      setTimeout(function () {
         location.reload();
+      }, 300000);
+    }
 
-        // Show the popup message
-        var popup = document.getElementById("popup-message");
-        popup.style.display = "block";
+    setInterval(refreshPage, 300000);
 
-        // Hide the popup after a certain time (e.g., 3 seconds)
-        setTimeout(function () {
-          popup.style.display = "none";
-        }, 3000); // 3000 milliseconds = 3 seconds
-
-        // Reload the page after 5 minutes (300000 milliseconds)
-        setTimeout(function () {
-          location.reload();
-        }, 300000);
+    // Function to show/hide the scroll-to-top button based on the scroll position
+    function toggleScrollToTopButton() {
+      var scrollToTopButton = $(".scroll-to-top");
+      if ($(window).scrollTop() > 100) {
+        scrollToTopButton.fadeIn();
+      } else {
+        scrollToTopButton.fadeOut();
       }
+    }
 
-      setInterval(refreshPage, 300000);
+    // Event handler for the scroll-to-top button click
+    $(".scroll-to-top a").click(function (e) {
+      e.preventDefault();
+      $("html, body").animate({ scrollTop: 0 }, "fast");
+    });
 
-      // Function to show/hide the scroll-to-top button based on the scroll position
-      function toggleScrollToTopButton() {
-        var scrollToTopButton = $(".scroll-to-top");
-        if ($(window).scrollTop() > 100) {
-          scrollToTopButton.fadeIn();
-        } else {
-          scrollToTopButton.fadeOut();
-        }
-      }
-
-      // Event handler for the scroll-to-top button click
-      $(".scroll-to-top a").click(function (e) {
-        e.preventDefault();
-        $("html, body").animate({ scrollTop: 0 }, "fast");
-      });
-
-      // Event handler for the window scroll event
-      $(window).scroll(function () {
-        toggleScrollToTopButton();
-      });
-
+    // Event handler for the window scroll event
+    $(window).scroll(function () {
       toggleScrollToTopButton();
+    });
 
-      function getGreeting() {
-        var currentTime = new Date();
-        var currentHour = currentTime.getUTCHours() + 6; //get Indian time
-        var greetingText = document.getElementById("greeting-text");
-        console.log(currentHour);
-        if (currentHour >= 0 && currentHour < 12) {
-          greetingText.textContent = "Good morning";
-          console.log(greetingText.textContent);
-        } else if (currentHour >= 12 && currentHour < 16) {
-          greetingText.textContent = "Good afternoon";
-          console.log(greetingText.textContent);
-        } else {
-          greetingText.textContent = "Good evening";
-          console.log(greetingText.textContent);
+    toggleScrollToTopButton();
+
+    function getGreeting() {
+      var currentTime = new Date();
+      var currentHour = currentTime.getUTCHours() + 6; //get Indian time
+      var greetingText = document.getElementById("greeting-text");
+      console.log(currentHour);
+      if (currentHour >= 0 && currentHour < 12) {
+        greetingText.textContent = "Good morning";
+        console.log(greetingText.textContent);
+      } else if (currentHour >= 12 && currentHour < 16) {
+        greetingText.textContent = "Good afternoon";
+        console.log(greetingText.textContent);
+      } else {
+        greetingText.textContent = "Good evening";
+        console.log(greetingText.textContent);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      getGreeting();
+    });
+
+    function formatDate(dateString) {
+      // Convert date string from "yyyy-mm-dd" to "dd-mm-yyyy"
+      var dateParts = dateString.split("-");
+      return dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+    }
+
+    $(document).ready(function () {
+      function filterTableByDate(date) {
+        // Show all rows initially
+        $("tbody tr").show();
+
+        if (date) {
+          // Convert the selected date to the format "dd-mm-yyyy"
+          var selectedDateFormatted = formatDate(date);
+
+          // Hide rows that do not match the selected date
+          $("tbody tr").each(function () {
+            var rowDate = $(this).find("td:nth-child(7)").text();
+            if (formatDate(rowDate) !== selectedDateFormatted) {
+              $(this).hide();
+            }
+          });
         }
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        getGreeting();
-      });
+      // Function to filter the table by cardiologist
+      function filterTableByCardiologist(cardiologist) {
+        // Show all rows initially
+        $("tbody tr").show();
 
-      function formatDate(dateString) {
-        // Convert date string from "yyyy-mm-dd" to "dd-mm-yyyy"
-        var dateParts = dateString.split("-");
-        return dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+        if (cardiologist) {
+          // Filter rows based on the selected cardiologist
+          $("tbody tr").each(function () {
+            var rowCardiologistFirst = $(this).data("cardiologist-first");
+            var rowCardiologistLast = $(this).data("cardiologist-last");
+            var rowCardiologist =
+              rowCardiologistFirst + " " + rowCardiologistLast;
+            if (rowCardiologist !== cardiologist) {
+              $(this).hide();
+            }
+          });
+        }
       }
 
-      $(document).ready(function () {
-        function filterTableByDate(date) {
-          // Show all rows initially
-          $("tbody tr").show();
+      function filterTableByLocation(location) {
+        // Show all rows initially
+        $("tbody tr").show();
 
-          if (date) {
-            // Convert the selected date to the format "dd-mm-yyyy"
-            var selectedDateFormatted = formatDate(date);
-
-            // Hide rows that do not match the selected date
-            $("tbody tr").each(function () {
-              var rowDate = $(this).find("td:nth-child(7)").text();
-              if (formatDate(rowDate) !== selectedDateFormatted) {
-                $(this).hide();
-              }
-            });
-          }
+        if (location) {
+          // Filter rows based on the selected location
+          $("tbody tr").each(function () {
+            var rowCity = $(this).find("td:nth-child(8)").text().trim();
+            var rowLocation = $(this).find("td:nth-child(9)").text().trim();
+            if (rowCity !== location && rowLocation !== location) {
+              $(this).hide();
+            }
+          });
         }
+      }
 
-        // Function to filter the table by cardiologist
-        function filterTableByCardiologist(cardiologist) {
-          // Show all rows initially
-          $("tbody tr").show();
-
-          if (cardiologist) {
-            // Filter rows based on the selected cardiologist
-            $("tbody tr").each(function () {
-              var rowCardiologistFirst = $(this).data("cardiologist-first");
-              var rowCardiologistLast = $(this).data("cardiologist-last");
-              var rowCardiologist =
-                rowCardiologistFirst + " " + rowCardiologistLast;
-              if (rowCardiologist !== cardiologist) {
-                $(this).hide();
-              }
-            });
-          }
-        }
-
-        function filterTableByLocation(location) {
-          // Show all rows initially
-          $("tbody tr").show();
-
-          if (location) {
-            // Filter rows based on the selected location
-            $("tbody tr").each(function () {
-              var rowCity = $(this).find("td:nth-child(8)").text().trim();
-              var rowLocation = $(this).find("td:nth-child(9)").text().trim();
-              if (rowCity !== location && rowLocation !== location) {
-                $(this).hide();
-              }
-            });
-          }
-        }
-
-        // Event handler for the "Date" dropdown filter
-        $("#filter-date-select-date").change(function () {
-          var selectedDate = $(this).val();
-          filterTableByDate(selectedDate);
-        });
-
-        // Event handler for the "Allocate" dropdown filter
-        $(document).on(
-          "change",
-          "#filter-allocate-select-allocate",
-          function () {
-            var selectedCardiologist = $(this).val();
-            filterTableByCardiologist(selectedCardiologist);
-          }
-        );
-
-        // Event handler for the "City/Location" dropdown filter
-        $(document).on("change", "#filter-city-select-city", function () {
-          var selectedCity = $(this).val();
-          filterTableByLocation(selectedCity);
-        });
-
-        $(document).on(
-          "change",
-          "#filter-location-select-location",
-          function () {
-            var selectedLocation = $(this).val();
-            filterTableByLocation(selectedLocation);
-            updateLocationOptions(selectedLocation);
-          }
-        );
-
-        // Call the filter functions on page load to initialize the table
-        filterTableByDate($("#filter-date-select-date").val());
-        filterTableByCardiologist($("#filter-allocate-select-allocate").val());
-        filterTableByLocation($("#filter-city-select-city").val());
+      // Event handler for the "Date" dropdown filter
+      $("#filter-date-select-date").change(function () {
+        var selectedDate = $(this).val();
+        filterTableByDate(selectedDate);
       });
-    </script>
 
-    <div class="footer">
-      <p>&copy; 2019-2023 XRAi Digital. All rights reserved.</p>
-    </div>
-  </body>
+      // Event handler for the "Allocate" dropdown filter
+      $(document).on(
+        "change",
+        "#filter-allocate-select-allocate",
+        function () {
+          var selectedCardiologist = $(this).val();
+          filterTableByCardiologist(selectedCardiologist);
+        }
+      );
+
+      // Event handler for the "City/Location" dropdown filter
+      $(document).on("change", "#filter-city-select-city", function () {
+        var selectedCity = $(this).val();
+        filterTableByLocation(selectedCity);
+      });
+
+      $(document).on(
+        "change",
+        "#filter-location-select-location",
+        function () {
+          var selectedLocation = $(this).val();
+          filterTableByLocation(selectedLocation);
+          updateLocationOptions(selectedLocation);
+        }
+      );
+
+      // Call the filter functions on page load to initialize the table
+      filterTableByDate($("#filter-date-select-date").val());
+      filterTableByCardiologist($("#filter-allocate-select-allocate").val());
+      filterTableByLocation($("#filter-city-select-city").val());
+    });
+  </script>
+
+  <div class="footer">
+    <p>&copy; 2019-2023 XRAi Digital. All rights reserved.</p>
+  </div>
+</body>
+
 </html>

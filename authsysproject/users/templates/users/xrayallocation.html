@@ -585,9 +585,9 @@
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-core@latest/dist/cornerstone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@latest/dist/cornerstoneWADOImageLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@latest/dist/cornerstoneTools.js"></script>
-    
 
-    
+
+
 
 
     <script>
@@ -649,18 +649,18 @@
         const reportedRowCount = $(
           '#patientTable tbody tr .reportButton:contains("Reported")'
         ).length;
-    
+
         // Update the counts on the web page
         $("#totalRowCount").text(totalRowCount);
         $("#reportedRowCount").text(reportedRowCount);
       }
-    
+
       // Call the updateRowCounts function when the document is ready
       $(document).ready(function () {
         updateRowCounts();
       });
     </script>
-    
+
     <script>
         function myFunction() {
             var input, filter, table, tr, td, i, txtValue;
@@ -701,7 +701,7 @@
         const testDate = String(button.data("testdate")).trim();
         const reportDate = String(button.data("reportdate")).trim();
         const reportImage = String(button.data("reportimage")).trim();
-  
+
         // Check the isDone status
         if (isDone) {
           // If isDone is true, the button should already be in 'reported' state
@@ -712,7 +712,7 @@
           button.addClass("reported");
           // Change the button text
           button.text("Reported");
-  
+
         // Construct the URL with query parameters
         const redirectURL = `reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage}`;
   

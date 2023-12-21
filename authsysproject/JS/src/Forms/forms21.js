@@ -74,6 +74,9 @@ const _schema = {
         Bradycardia: {
 			type: "boolean",
 		},
+		TInversion: {
+		    type: "boolean",
+		},
 		BradycardiarwText: {
 			type: "string",
 			"description": "Type between 0-300(in BPM)",
@@ -190,6 +193,12 @@ const uischema = {
 					type: "Control",
 					label: "Sinus Tachycardia",
 					scope: "#/properties/Tachycardia",
+				},
+
+				{
+				    type: "Control",
+				    label: "Normal sinus rhythm with t wave inversion in lead III",
+				    scope: "#/properties/TInversion",
 				},
 				
 				// Others

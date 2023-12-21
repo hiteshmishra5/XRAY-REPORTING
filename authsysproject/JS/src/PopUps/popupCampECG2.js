@@ -57,47 +57,56 @@ export default class PopupCampECG extends React.Component {
     
 
 
-    if (data.ECGcampNormal && (data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia)) {
+    if (data.ECGcampNormal && (data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/ECGcampNormal"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
 
-    if (data.RhythmRBBB && (data.ECGcampNormal || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia)) {
+    if (data.RhythmRBBB && (data.ECGcampNormal || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/RhythmRBBB"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
 
-    if (data.TachycardiaRBBB && (data.ECGcampNormal || data.RhythmRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia)) {
+    if (data.TachycardiaRBBB && (data.ECGcampNormal || data.RhythmRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/TachycardiaRBBB"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
 
-    if (data.BradycardiaRBBB && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.Bradycardia || data.Tachycardia)) {
+    if (data.BradycardiaRBBB && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.Bradycardia || data.Tachycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/BradycardiaRBBB"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
 
-    if (data.Bradycardia && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Tachycardia)) {
+    if (data.Bradycardia && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Tachycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/Bradycardia"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
 
-    if (data.Tachycardia && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia)) {
+    if (data.Tachycardia && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.TInversion)) {
       document.querySelectorAll('label[id^="#/properties/Tachycardia"]').forEach((el) => {
         el.classList.add("err");
       });
       return;
     }
+
+    if (data.TInversion && (data.ECGcampNormal || data.RhythmRBBB || data.TachycardiaRBBB || data.BradycardiaRBBB || data.Bradycardia || data.Tachycardia )) {
+      document.querySelectorAll('label[id^="#/properties/Tachycardia"]').forEach((el) => {
+        el.classList.add("err");
+      });
+      return;
+    }
+
+
 
 
     if (!err) {

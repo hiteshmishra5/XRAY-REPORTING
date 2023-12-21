@@ -939,17 +939,17 @@ def fetch_patient_data_from_folder(service, folder_id, existing_patient_ids):
 
                         for page in pdf_reader.pages:
                             first_page_text = page.extract_text()
-                            patient_id = str(first_page_text).split("Id :")[1].split(" ")[1].split("\n")[0]
+                            patient_id = str(first_page_text).split("Id :")[1].split(" ")[1].split("\n")[0].strip()
                             if patient_id == '':
                                 patient_id = str(first_page_text).split("Comments")[1].split("HR")[0].strip()
 
                             if patient_id not in existing_patient_ids and patient_id != '':
-                                patient_name = str(first_page_text).split("Name :")[1].split("Age :")[0].split('\n')[0]
-                                patient_age = str(first_page_text).split("Age :")[1].split(" ")[1].split("\n")[0]
-                                patient_gender = str(first_page_text).split("Gender :")[1].split("\n")[0]
-                                heart_rate = str(first_page_text).split("HR:")[1].split(" ")[1].split("/")[0]
+                                patient_name = str(first_page_text).split("Name :")[1].split("Age :")[0].split('\n')[0].strip()
+                                patient_age = str(first_page_text).split("Age :")[1].split(" ")[1].split("\n")[0].strip()
+                                patient_gender = str(first_page_text).split("Gender :")[1].split("\n")[0].strip()
+                                heart_rate = str(first_page_text).split("HR:")[1].split(" ")[1].split("/")[0].strip()
                                 pr_interval = str(first_page_text).split("PR:")[1].split("QRS:")[0].split("ms")[0].strip()
-                                report_time = str(first_page_text).split("Acquired on:")[1][12:17]
+                                report_time = str(first_page_text).split("Acquired on:")[1][12:17].strip()
                                 raw_date = str(first_page_text).split("Acquired on:")[1][0:11].strip()
                                 formatted_date = datetime.strptime(raw_date, '%Y-%m-%d').date()
 

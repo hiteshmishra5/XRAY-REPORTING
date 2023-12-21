@@ -431,6 +431,40 @@
         border-radius: 5px;
         width: 250px;
       }
+
+      a.imageButton {
+        display: inline-block;
+        padding: 3px 5px;
+        background-color: brown;
+        color: #ffffff;
+        text-decoration: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      a.imageButton:hover {
+        background-color: #8B4513; /* Change to the desired darker brown color */
+        color: #ffffff;
+        text-decoration: none;
+      }
+
+      a.reportButton {
+        color: white;
+        background-color: #ffa500;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none; /* Add this line to remove underline */
+        transition: background-color 0.3s;
+      }
+
+      a.reportButton:hover {
+        background-color: #ff8c00; /* Change to the desired darker orange color on hover */
+        text-decoration: none;
+      }
   </style>
 </head>
 
@@ -466,7 +500,7 @@
                   </div>
                   <div class = 'search-google'>
                       <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
-                      <button hidden type="button" class="refresh" onclick="refreshPage()">
+                      <button type="button" class="refresh" onclick="refreshPage()">
                         <i style="font-size: 19px" class="fa">&#xf021;</i>
                       </button>
                   </div>

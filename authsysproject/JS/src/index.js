@@ -396,6 +396,77 @@ class App extends Component {
 ////////////////////pdf try////////////////////
 
 
+GetDivContentOnPDF() {
+  var filename = this.createFilename();
+  const data = document.getElementsByClassName('ck-editor__editable')[0];
+  const table = data.querySelector('table');
+  data.classList.add("ck-blurred");
+  data.classList.remove("ck-focused");
+
+  if (data != undefined) {
+    // Create a new jsPDF instance
+    const pdf = new jsPDF('p', 'pt', [595.28, 841.89], true); // A4 dimensions
+
+    // Capture the entire content, including text and images
+    html2canvas(data, {
+      scale: 4, // Adjust the scale if needed for better image quality
+      useCORS: true, // Added to address potential CORS issues
+    }).then((canvas) => {
+      // Calculate the position to center the image
+      const imgWidth = 595.28 - 40; // Adjusted width to leave some margin
+      const imgHeight = (imgWidth * 1.5) - 40; // Adjusted height to maintain aspect ratio and leave margin
+      const imgX = (595.28 - imgWidth) / 2;
+      const imgY = (841.89 - imgHeight) / 2;
+
+      // Add the image to the PDF with the initial size
+      pdf.addImage(canvas, 'PNG', imgX, imgY, imgWidth, imgHeight);
+      pdf.setTextColor(255, 255, 255);
+
+      // Calculate the position to place the text at the bottom
+      const textX = 40;
+      const textY = 841.89 - 2; // 20 points from the bottom
+
+      // If a table exists within the ck-editor__editable div, capture its text content
+      if (table) {
+        const tableText = table.textContent || '';
+
+        // Add the table text as text (preserve original formatting)
+        pdf.setFontSize(2); // Adjust the font size as needed
+        pdf.text(textX, textY, tableText);
+      }
+
+      // Iterate through all paragraphs in the ck-editor__editable div
+      const paragraphs = data.querySelectorAll('p');
+      paragraphs.forEach((paragraph) => {
+        const paragraphText = paragraph.textContent || '';
+
+        // Add each paragraph text as text (preserve original formatting)
+        pdf.setFontSize(2); // Adjust the font size as needed
+        pdf.text(textX, textY - 2, paragraphText); // Place it above the table text
+      });
+
+      // Save the PDF
+      pdf.save(filename ? filename + ".pdf" : "download.pdf");
+
+      // Modify the size of the last added image within .ck-content .image
+      const images = data.querySelectorAll('.ck-content .image img');
+      const lastImage = images[images.length - 1]; // Select the last image from the NodeList
+
+      if (lastImage) {
+        const smallerWidth = lastImage.width / 4;
+        const smallerHeight = lastImage.height / 4;
+
+        // Convert the last image to a data URI with the modified size
+        const lastImageDataURI = lastImage.toDataURL('image/jpg', 1.0);
+
+        // Add the last image again with the modified size
+        pdf.addImage(lastImageDataURI, 'PNG', imgX, imgY + 100, smallerWidth, smallerHeight);
+      }
+    });
+  }
+}
+
+////////////////////////////////// Another one ////////////////////////
 // GetDivContentOnPDF() {
 //   var filename = this.createFilename();
 //   const data = document.getElementsByClassName('ck-editor__editable')[0];
@@ -422,7 +493,7 @@ class App extends Component {
 
 //       // Add the image to the PDF
 //       pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth, imgHeight);
-
+//       pdf.setTextColor(255, 255, 255);
 //       // Calculate the position to place the text at the bottom
 //       const textX = 40;
 //       const textY = 841.89 - 2; // 20 points from the bottom
@@ -436,83 +507,21 @@ class App extends Component {
 //         pdf.text(textX, textY, tableText);
 //       }
 
+//       // If the ck-editor__editable div contains paragraphs, capture the text from the first paragraph
+//       const paragraphs = data.querySelectorAll('p');
+//       if (paragraphs.length > 0) {
+//         const firstParagraphText = paragraphs[0].textContent || '';
+
+//         // Add the first paragraph text as text (preserve original formatting)
+//         pdf.setFontSize(2); // Adjust the font size as needed
+//         pdf.text(textX, textY - 2, firstParagraphText); // Place it above the table text
+//       }
+
 //       // Save the PDF
 //       pdf.save(filename ? filename + ".pdf" : "download.pdf");
 //     });
 //   }
 // }
-
-////////////////////////////////// Another one ////////////////////////
-//
-
-GetDivContentOnPDF() {
-  var filename = this.createFilename();
-  const data = document.getElementsByClassName('ck-editor__editable')[0];
-  const table = data.querySelector('table');
-  data.classList.add("ck-blurred");
-  data.classList.remove("ck-focused");
-
-  if (data != undefined) {
-    // Create a new jsPDF instance
-    const pdf = new jsPDF('p', 'pt', [595.28, 841.89], true); // A4 dimensions
-
-    // Capture the entire content, including text and images
-    html2canvas(data, {
-      scale: 4, // Adjust the scale if needed for better image quality
-      useCORS: true, // Added to address potential CORS issues
-    }).then((canvas) => {
-      // Calculate the position to center the image
-      const imgWidth = 595.28 - 40; // Adjusted width to leave some margin
-      const imgHeight = (imgWidth * 1.5) - 40; // Adjusted height to maintain aspect ratio and leave margin
-      const imgX = (595.28 - imgWidth) / 2;
-      const imgY = (841.89 - imgHeight) / 2;
-
-      // Add the image to the PDF with the initial size
-      pdf.addImage(canvas, 'PNG', imgX, imgY, imgWidth, imgHeight);
-
-      // Calculate the position to place the text at the bottom
-      const textX = 40;
-      const textY = 841.89 - 2; // 20 points from the bottom
-
-      // If a table exists within the ck-editor__editable div, capture its text content
-      if (table) {
-        const tableText = table.textContent || '';
-
-        // Add the table text as text (preserve original formatting)
-        pdf.setFontSize(2); // Adjust the font size as needed
-        pdf.text(textX, textY, tableText);
-      }
-
-      // If the ck-editor__editable div contains paragraphs, capture the text from the first paragraph
-      const paragraphs = data.querySelectorAll('p');
-      if (paragraphs.length > 0) {
-        const firstParagraphText = paragraphs[0].textContent || '';
-
-        // Add the first paragraph text as text (preserve original formatting)
-        pdf.setFontSize(2); // Adjust the font size as needed
-        pdf.text(textX, textY - 2, firstParagraphText); // Place it above the table text
-      }
-
-      // Save the PDF
-      pdf.save(filename ? filename + ".pdf" : "download.pdf");
-
-      // Modify the size of the last added image within .ck-content .image
-      const images = data.querySelectorAll('.ck-content .image img');
-      const lastImage = images[images.length - 1]; // Select the last image from the NodeList
-
-      if (lastImage) {
-        const smallerWidth = lastImage.width / 4;
-        const smallerHeight = lastImage.height / 4;
-
-        // Convert the last image to a data URI with the modified size
-        const lastImageDataURI = lastImage.toDataURL('image/jpg', 1.0);
-
-        // Add the last image again with the modified size
-        pdf.addImage(lastImageDataURI, 'PNG', imgX, imgY + 100, smallerWidth, smallerHeight);
-      }
-    });
-  }
-}
 
   
 //////////ecgbot pdf**************
@@ -581,9 +590,10 @@ GetEcgContentOnPDF() {
         graphCtx.drawImage(image, -graphCanvas.height / 2, -graphCanvas.width / 2, graphCanvas.height, graphCanvas.width);
 
         pdf.addImage(graphCanvas.toDataURL('image/png'), 'PNG', 0, 0, a4Width, a4Height);
-
+        
         pdf.addPage("a4", "portrait"); // Add a new portrait-oriented page
         pdf.addImage(imgData, 'PNG', xPosition, yPosition, pdfImageWidth, pdfImageHeight);
+        pdf.setTextColor(255, 255, 255);
 
         // added for selectable text
         // Calculate the position to place the text at the bottom
@@ -599,15 +609,15 @@ GetEcgContentOnPDF() {
         pdf.text(textX, textY, tableText);
       }
 
-      // If the ck-editor__editable div contains paragraphs, capture the text from the first paragraph
+      // Iterate through all paragraphs in the ck-editor__editable div
       const paragraphs = data.querySelectorAll('p');
-      if (paragraphs.length > 0) {
-        const firstParagraphText = paragraphs[0].textContent || '';
+      paragraphs.forEach((paragraph) => {
+        const paragraphText = paragraph.textContent || '';
 
-        // Add the first paragraph text as text (preserve original formatting)
+        // Add each paragraph text as text (preserve original formatting)
         pdf.setFontSize(2); // Adjust the font size as needed
-        pdf.text(textX, textY - 2, firstParagraphText); // Place it above the table text
-      }
+        pdf.text(textX, textY - 2, paragraphText); // Place it above the table text
+      });
 
         pdf.save(filename ? filename + ".pdf" : "download.pdf");
       };
@@ -829,26 +839,26 @@ GetEcgContentOnPDF() {
         {
           this.state.modal && (options_label === "X-RAY CHEST") ?
             <XrayChest handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                this.state.modal && (options_label === "CAMP ECG") ?
-                   <CampECG2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                    this.state.modal && (options_label === "ECG") ?
-                     <ECG handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                     this.state.modal && (options_label === "VITALS") ?
-                        <Vitals handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                        this.state.modal && (options_label === "OPTOMETRY") ?
-                         <Optometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                           this.state.modal && (options_label === "OPTOMETRY NO-INPUT") ?
-                            <Optometry2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                            this.state.modal && (options_label === "OPTOMETRY (CAMP)") ?
-                              <Optometry3 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                                this.state.modal && (options_label === "AUDIOMETRY") ?
-                                  <Audiometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                                   this.state.modal && (options_label === "OPTOMETRY (CAMP) NO-INPUT") ?
-                                    <Optometry4 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                                    this.state.modal && (options_label === "CT ABDOMEN") ?
-                                     <CtAbdomen handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
-                                        this.state.modal && (options_label === "CT HEAD") ?
-                                            <CtHead handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+            this.state.modal && (options_label === "CAMP ECG") ?
+              <CampECG2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+              // this.state.modal && (options_label === "ECG") ?
+              //   <ECG handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                this.state.modal && (options_label === "VITALS") ?
+                  <Vitals handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                  this.state.modal && (options_label === "OPTOMETRY") ?
+                    <Optometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                    this.state.modal && (options_label === "OPTOMETRY NO-INPUT") ?
+                      <Optometry2 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                      this.state.modal && (options_label === "OPTOMETRY (CAMP)") ?
+                        <Optometry3 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                        this.state.modal && (options_label === "AUDIOMETRY") ?
+                          <Audiometry handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                          this.state.modal && (options_label === "OPTOMETRY (CAMP) NO-INPUT") ?
+                            <Optometry4 handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                            this.state.modal && (options_label === "CT ABDOMEN") ?
+                              <CtAbdomen handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
+                              this.state.modal && (options_label === "CT HEAD") ?
+                                <CtHead handleClick={this.handleClick} reportFrmData={reportFrmData} generateReport={this.generateReport} generatePatientTable={this.generatePatientTable()} /> :
                                             ""
         }
         <div className="document-editor">

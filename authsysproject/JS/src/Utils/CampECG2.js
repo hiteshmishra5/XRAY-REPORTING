@@ -74,46 +74,49 @@ class CampECG2 extends Component {
       }
       //Normal ECG
       if(frmData.ECGcampNormal){
-        report += "<p>" + "<b>" + "2. Normal Sinus Rhythm." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Normal Sinus Rhythm." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       // Sinus rhythm with incomplete RBBB
       if(frmData.RhythmRBBB){
-        report += "<p>" + "<b>" + "2. Sinus Rhythm with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Sinus Rhythm with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       // Sinus Tachycardia with incomplete RBBB
       if(frmData.TachycardiaRBBB){
-        report += "<p>" + "<b>" + "2. Sinus Tachycardia with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Sinus Tachycardia with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       // Sinus Bradycardia with incomplete RBBB
       if(frmData.BradycardiaRBBB){
-        report += "<p>" + "<b>" + "2. Sinus Bradycardia with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Sinus Bradycardia with incomplete RBBB." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       if(frmData.Bradycardia){
-        report += "<p>" + "<b>" + "2. Sinus Bradycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Sinus Bradycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       //Sinus Tachycardia
       if(frmData.Tachycardia){
-        report += "<p>" + "<b>" + "2. Sinus Tachycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+        report += "<p>" + "<b>" + "2. Sinus Tachycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
       //Others
-      if(frmData.OthersText2 && (frmData.RhythmRBBB || frmData.TachycardiaRBBB || frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia)) {
+      if(frmData.OthersText2 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB || frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia)) {
         report += "<p>" + "<b>" + "2. " + frmData.OthersText2 + "." + "</b>" + "</p>";
       }
 
 
-
       //Automation
-      if(frmData.HeartTextFR21 <= 60){
-        report += "<p>" + "<b>" + "2. Sinus Bradycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+      if(frmData.HeartTextFR21 <= 60 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+        frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.OthersText2)){
+        report += "<p>" + "<b>" + "2. Sinus Bradycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
-      if(frmData.HeartTextFR21 >= 100){
-        report += "<p>" + "<b>" + "2. Sinus Tachycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+      if(frmData.HeartTextFR21 >= 100 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+        frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.OthersText2)){
+        report += "<p>" + "<b>" + "2. Sinus Tachycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
-      if(frmData.PRIntervalFR21 >= 200){
-        report += "<p>" + "<b>" + "2. first degree AV block." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+      if(frmData.PRIntervalFR21 >= 200 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+        frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.OthersText2)){
+        report += "<p>" + "<b>" + "2. first degree AV block." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
-      if(frmData.HeartTextFR21 >= 60 && frmData.HeartTextFR21 <= 100){
-        report += "<p>" + "<b>" + "2. Normal Sinus Rhythm." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "</b>" + "</p>";
+      if(frmData.HeartTextFR21 >= 60 && frmData.HeartTextFR21 < 100 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+        frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.OthersText2)){
+        report += "<p>" + "<b>" + "2. Normal Sinus Rhythm." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "4. Normal sinus rhythm with t wave inversion in lead III." + "</b>" + "</p>";
       }
 
 

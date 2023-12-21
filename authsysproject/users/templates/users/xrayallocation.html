@@ -516,6 +516,7 @@
                       </div>
                     </div>
                   </th>
+                  <th>Dicom</th>
                   <th>Clinical History</th>
                   <th>Image</th>
                   <th>Actions</th>
@@ -530,6 +531,9 @@
                   <td>{{ patient.age }}</td>
                   <td>{{ patient.gender }}</td>
                   <td>{{ patient.study_date }}</td>
+                  <td>
+                    <a class="imageButton" id="openButton" target="_blank" href="{% get_media_prefix %}{{ patient.dicom_file }}">Open</a>
+                  </td>
                   <td>
                       <button class="openClinicalHistoryButton" data-clinical-history="{{ patient.notes }}">
                         Open

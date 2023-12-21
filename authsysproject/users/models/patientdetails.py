@@ -9,7 +9,7 @@ class PatientDetails(models.Model):
         ('Female', 'Female'),
         ('Other', 'Other'),
     ]
-    PatientId = models.CharField(max_length=15)
+    PatientId = models.CharField(max_length=50)
     PatientName = models.CharField(max_length=30)
     age = models.CharField(max_length=30)
     gender = models.CharField(max_length=15)

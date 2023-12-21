@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.contrib.auth.models import User
@@ -83,7 +83,7 @@ def logout(request):
 
 
 def allocation(request):
-    patients = PatientDetails.objects.all()
+    patients = PatientDetails.objects.all().order_by('-TestDate')
     unique_dates = set()
     for patient in patients:
         unique_dates.add(patient.date.date_field)
@@ -93,7 +93,7 @@ def allocation(request):
     return render(request, 'users/allocation.html', {'patients': patients, 'Date': formatted_dates, "Location": unique_location})
 
 def xrayallocation(request):
-    patients = DICOMData.objects.all().order_by('study_date')
+    patients = DICOMData.objects.all().order_by('-study_date')
     unique_dates = set()
     for patient in patients:
         unique_dates.add(patient.study_date)
@@ -1019,11 +1019,8 @@ def upload_dicom(request):
             print(dicom_data)
             dicom_instance.patient_id = str(dicom_data.PatientID)
             dicom_instance.patient_name = str(dicom_data.PatientName)
-            age = str(dicom_data.PatientAge).split("Y")[0]
-            if age.startswith('0'):
-                dicom_instance.age = age.split("0")[1]
-            else:
-                dicom_instance.age = age
+            dicom_instance.age = str(dicom_data.PatientAge)
+
 
             dicom_instance.gender = 'Male' if dicom_data.PatientSex.upper() == 'M' else 'Female'
             dicom_instance.notes = request.POST.get("note")

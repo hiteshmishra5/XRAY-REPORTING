@@ -397,74 +397,78 @@
     }
 
     .row-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
 
-      .count-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        background-color: skyblue;
-        border-radius: 10px;
-        font-family: 'Arial', sans-serif;
-      }
+    .count-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background-color: skyblue;
+      border-radius: 10px;
+      font-family: 'Arial', sans-serif;
+    }
 
-      #count1,
-      #count2,
-      .greeting {
-        margin-right: 10px;
-        margin-left:10px;
-        padding: 4px;
-        font-size: 16px;
-      }
+    #count1,
+    #count2,
+    .greeting {
+      margin-right: 10px;
+      margin-left: 10px;
+      padding: 4px;
+      font-size: 16px;
+    }
 
-      #totalRowCount, #reportedRowCount {
-        color: black;
-      }
+    #totalRowCount,
+    #reportedRowCount {
+      color: black;
+    }
 
-      #myInput {
-        padding: 8px;
-        font-size: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        width: 250px;
-      }
+    #myInput {
+      padding: 8px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 250px;
+    }
 
-      a.imageButton {
-        display: inline-block;
-        padding: 3px 5px;
-        background-color: brown;
-        color: #ffffff;
-        text-decoration: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
+    a.imageButton {
+      display: inline-block;
+      padding: 3px 5px;
+      background-color: brown;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
 
-      a.imageButton:hover {
-        background-color: #8B4513; /* Change to the desired darker brown color */
-        color: #ffffff;
-        text-decoration: none;
-      }
+    a.imageButton:hover {
+      background-color: #8B4513;
+      /* Change to the desired darker brown color */
+      color: #ffffff;
+      text-decoration: none;
+    }
 
-      a.reportButton {
-        color: white;
-        background-color: #ffa500;
-        border: none;
-        border-radius: 5px;
-        padding: 5px 10px;
-        font-size: 15px;
-        cursor: pointer;
-        text-decoration: none; /* Add this line to remove underline */
-        transition: background-color 0.3s;
-      }
+    a.reportButton {
+      color: white;
+      background-color: #ffa500;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      /* Add this line to remove underline */
+      transition: background-color 0.3s;
+    }
 
-      a.reportButton:hover {
-        background-color: #ff8c00; /* Change to the desired darker orange color on hover */
-        text-decoration: none;
-      }
+    a.reportButton:hover {
+      background-color: #ff8c00;
+      /* Change to the desired darker orange color on hover */
+      text-decoration: none;
+    }
   </style>
 </head>
 
@@ -498,11 +502,12 @@
                     <span id="count1"><strong>Total Cases:</strong> <span id="totalRowCount">0</span></span>
                     <span id="count2"><strong>Reported Cases:</strong> <span id="reportedRowCount">0</span></span>
                   </div>
-                  <div class = 'search-google'>
-                      <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
-                      <button type="button" class="refresh" onclick="refreshPage()">
-                        <i style="font-size: 19px" class="fa">&#xf021;</i>
-                      </button>
+                  <div class='search-google'>
+                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date"
+                      title="Type in a name">
+                    <button type="button" class="refresh" onclick="refreshPage()">
+                      <i style="font-size: 19px" class="fa">&#xf021;</i>
+                    </button>
                   </div>
 
                   <div class="greeting" id="greeting">
@@ -615,14 +620,47 @@
 
   <script>
     // Function to update the counts of rows with 'Report' and 'Reported' button states
+    // function updateRowCounts() {
+    //   const totalRowCount = $("#patientTable tbody tr").length;
+    //   const reportedRowCount = $(
+    //     '#patientTable tbody tr .reportButton:contains("Reported")'
+    //   ).length;
+
+    //   // Update the counts on the web page
+    //   $("#totalRowCount").text(totalRowCount);
+    //   $("#reportedRowCount").text(reportedRowCount);
+    // }
+
+    // // Call the updateRowCounts function when the document is ready
+    // $(document).ready(function () {
+    //   updateRowCounts();
+    // });
+
     function updateRowCounts() {
-      const totalRowCount = $("#patientTable tbody tr").length;
-      const reportedRowCount = $(
-        '#patientTable tbody tr .reportButton:contains("Reported")'
-      ).length;
+      const tableBody = $("#patientTable tbody");
+
+      // Sort the rows based on the "Reported" button state
+      const rows = tableBody.find("tr").toArray().sort(function (a, b) {
+        const isReportedA = $(a).find('.reportButton').text().trim() === 'Reported';
+        const isReportedB = $(b).find('.reportButton').text().trim() === 'Reported';
+
+        // Compare rows based on the "Reported" button state
+        if (isReportedA && !isReportedB) {
+          return 1;
+        } else if (!isReportedA && isReportedB) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      // Append the sorted rows back to the table body
+      tableBody.html(rows);
 
       // Update the counts on the web page
-      $("#totalRowCount").text(totalRowCount);
+      $("#totalRowCount").text(rows.length);
+
+      const reportedRowCount = tableBody.find('.reportButton:contains("Reported")').length;
       $("#reportedRowCount").text(reportedRowCount);
     }
 
@@ -658,7 +696,7 @@
       button.text("Reported");
 
       // Construct the URL with query parameters
-      const redirectURL = reporting-bot?data-patientid=${PatientId}&data-patientname=${patientName}&data-age=${age}&data-gender=${gender}&data-heartrate=${heartRate}&data-printerval=${PRInterval}&data-testdate=${testDate}&data-reportdate=${reportDate}&data-reportimage=${reportImage};
+      const redirectURL = `reporting - bot ? data - patientid=${ PatientId }& data - patientname=${ patientName }& data - age=${ age }& data - gender=${ gender }& data - heartrate=${ heartRate }& data - printerval=${ PRInterval }& data - testdate=${ testDate }& data - reportdate=${ reportDate }& data - reportimage=${ reportImage }`;
 
       // Redirect to the desired URL
       window.location.href = redirectURL;
@@ -730,10 +768,10 @@
       // Reload the page after 5 minutes (300000 milliseconds)
       setTimeout(function () {
         location.reload();
-      }, 300000);
+      }, 10000);
     }
 
-    setInterval(refreshPage, 300000);
+    setInterval(refreshPage, 10000);
 
     // Function to show/hide the scroll-to-top button based on the scroll position
     function toggleScrollToTopButton() {

@@ -1021,7 +1021,6 @@ def upload_dicom(request):
             dicom_instance.patient_name = str(dicom_data.PatientName)
             dicom_instance.age = str(dicom_data.PatientAge)
 
-
             dicom_instance.gender = 'Male' if dicom_data.PatientSex.upper() == 'M' else 'Female'
             dicom_instance.notes = request.POST.get("note")
             dicom_instance.save()

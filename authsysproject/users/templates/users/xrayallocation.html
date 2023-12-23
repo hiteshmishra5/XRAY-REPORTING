@@ -523,23 +523,23 @@
                 <th>
                   <div class="filter-dropdown-container">
                     <div>Test Date</div>
-                    <div class="dropdown-select1" id="filter-date-dropdown-date">
-                      <select id="filter-date-select-date" class="form-control">
-                        <option value="">All</option>
-                        {% for date in Date %}
-                        <option value="{{ date }}">{{ date }}</option>
-                        {% endfor %}
-                      </select>
+                      <div class="dropdown-select1" id="filter-date-dropdown-date">
+                          <select id="filter-date-select-date" class="form-control">
+                            <option value="">All</option>
+                            {% for date in Date %}
+                            <option value="{{ date }}">{{ date }}</option>
+                            {% endfor %}
+                          </select>
+                      </div>
                     </div>
                   </div>
-        </div>
-        </th>
-        <th>Dicom</th>
-        <th>Clinical History</th>
-        <th>Image</th>
-        <th>Actions</th>
-        <!-- Add a column for the "Report" button -->
-        </tr>
+                </th>
+
+                <th>Clinical History</th>
+                <th>Image</th>
+                <th>Actions</th>
+              <!-- Add a column for the "Report" button -->
+              </tr>
         </thead>
         <tbody>
           {% for patient in patients %}
@@ -550,14 +550,11 @@
             <td>{{ patient.gender }}</td>
             <td>{{ patient.study_date }}</td>
             <td>
-              <a class="imageButton" id="openButton" target="_blank"
-                href="{% get_media_prefix %}{{ patient.dicom_file }}">Open</a>
-            </td>
-            <td>
               <button class="openClinicalHistoryButton" data-clinical-history="{{ patient.notes }}">
                 Open
               </button>
             </td>
+
             <td>
               <a class="imageButton" target="_blank" href="{% get_media_prefix %}{{ patient.jpeg_file }}">
                 Image
@@ -596,8 +593,7 @@
   <!-- Include necessary libraries -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cornerstone-core@latest/dist/cornerstone.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@latest/dist/cornerstoneWADOImageLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@latest/dist/cornerstoneWADOImageLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@latest/dist/cornerstoneTools.js"></script>
 
 
@@ -640,6 +636,7 @@
         popup.fadeIn();
       }
 
+
       function hidePopup() {
         // Hide the popup
         const popup = $("#clinicalHistoryPopup");
@@ -658,55 +655,21 @@
 
 
     // Function to update the counts of rows with 'Report' and 'Reported' button states
-    // function updateRowCounts() {
-    //   const totalRowCount = $("#patientTable tbody tr").length;
-    //   const reportedRowCount = $(
-    //     '#patientTable tbody tr .reportButton:contains("Reported")'
-    //   ).length;
+      function updateRowCounts() {
+        const totalRowCount = $("#patientTable tbody tr").length;
+        const reportedRowCount = $(
+          '#patientTable tbody tr .reportButton:contains("Reported")'
+        ).length;
 
-    //   // Update the counts on the web page
-    //   $("#totalRowCount").text(totalRowCount);
-    //   $("#reportedRowCount").text(reportedRowCount);
-    // }
+        // Update the counts on the web page
+        $("#totalRowCount").text(totalRowCount);
+        $("#reportedRowCount").text(reportedRowCount);
+      }
 
-    // // Call the updateRowCounts function when the document is ready
-    // $(document).ready(function () {
-    //   updateRowCounts();
-    // });
-
-
-    function updateRowCounts() {
-      const tableBody = $("#patientTable tbody");
-
-      // Sort the rows based on the "Reported" button state
-      const rows = tableBody.find("tr").toArray().sort(function (a, b) {
-        const isReportedA = $(a).find('.reportButton').text().trim() === 'Reported';
-        const isReportedB = $(b).find('.reportButton').text().trim() === 'Reported';
-
-        // Compare rows based on the "Reported" button state
-        if (isReportedA && !isReportedB) {
-          return 1;
-        } else if (!isReportedA && isReportedB) {
-          return -1;
-        } else {
-          return 0;
-        }
+      // Call the updateRowCounts function when the document is ready
+      $(document).ready(function () {
+        updateRowCounts();
       });
-
-      // Append the sorted rows back to the table body
-      tableBody.html(rows);
-
-      // Update the counts on the web page
-      $("#totalRowCount").text(rows.length);
-
-      const reportedRowCount = tableBody.find('.reportButton:contains("Reported")').length;
-      $("#reportedRowCount").text(reportedRowCount);
-    }
-
-    // Call the updateRowCounts function when the document is ready
-    $(document).ready(function () {
-      updateRowCounts();
-    });
   </script>
 
   <script>

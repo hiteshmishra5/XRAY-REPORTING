@@ -1016,14 +1016,13 @@ def upload_dicom(request):
 
             # Extract metadata
             dicom_data = dcmread(dicom_instance.dicom_file.path)
-            print(dicom_data)
             dicom_instance.patient_id = str(dicom_data.PatientID)
             dicom_instance.patient_name = str(dicom_data.PatientName)
             dicom_instance.age = str(dicom_data.PatientAge)
 
             dicom_instance.gender = 'Male' if dicom_data.PatientSex.upper() == 'M' else 'Female'
             dicom_instance.notes = request.POST.get("note")
-            dicom_instance.save()
+            print(dicom_instance.notes)
 
             # Format the study_date as "date/month/year"
             if dicom_data.StudyDate:

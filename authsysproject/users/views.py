@@ -57,6 +57,7 @@ def login(request):
         password = request.POST['password']
 
         user = authenticate(request, username=email, password=password)
+        print(user)
         if user is not None:
             ContribLogin(request, user)
             group = user.groups.values_list('name', flat=True).first()
@@ -64,11 +65,13 @@ def login(request):
             if group == 'institution':
                 return redirect('proinst')
             elif group == 'cardiologist':
-                return redirect('allocation')
+                return redirect('ecgallocation')
             elif group == 'cardiologist2':
                 return redirect('xrayallocation')
             elif group == 'audiometrist':
                 return redirect('audiometry')
+            elif group == 'coordinator':
+                return redirect('coordinator')
             else:
                 return redirect('reportingbot')
         else:
@@ -81,8 +84,19 @@ def logout(request):
     ContribLogout(request)
     return redirect('login')
 
-
 def allocation(request):
+    patients = PatientDetails.objects.all().order_by('-TestDate')  # Sort by date in ascending order
+    unique_dates = set()
+    for patient in patients:
+        unique_dates.add(patient.date.date_field)
+    sorted_unique_dates = sorted(unique_dates, reverse=False)
+    formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
+    unique_cities = [f"{x.name}" for x in City.objects.all()]
+    unique_locations = [f"{y.name}" for y in Location.objects.all()]
+    return render(request, 'users/allocation.html',{'patient': patients, 'Date': formatted_dates, "Location": unique_locations, "Cities": unique_cities})
+
+
+def ecgallocation(request):
     patients = PatientDetails.objects.all().order_by('-TestDate')
     unique_dates = set()
     for patient in patients:
@@ -90,7 +104,7 @@ def allocation(request):
     sorted_unique_dates = sorted(unique_dates, reverse=False)
     formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
     unique_location = Location.objects.all()
-    return render(request, 'users/allocation.html', {'patients': patients, 'Date': formatted_dates, "Location": unique_location})
+    return render(request, 'users/ecgallocation.html', {'patients': patients, 'Date': formatted_dates, "Location": unique_location})
 
 def xrayallocation(request):
     patients = DICOMData.objects.all().order_by('-study_date')

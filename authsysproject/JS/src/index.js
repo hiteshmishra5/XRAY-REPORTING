@@ -314,8 +314,10 @@ class App extends Component {
 
   createFilename() {
     //Aman
+    const urlSearchParams = new URLSearchParams(window.location.search)
     var patientName = document.querySelector("#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(1) > td:nth-child(1) > span > strong")?.innerHTML;
     var PatientId = document.querySelector("#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(1) > td:nth-child(2) > span > strong")?.innerHTML;
+    var location = urlSearchParams.get("data-location")
     // TestType = document.querySelector("#root > div > div > div.document-editor__editable-container > div > p:nth-child(3) > strong > u")?.innerHTML;
     //var formatDate = document.querySelector("#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(2) > td:nth-child(2) > span > strong")?.innerHTML;
 
@@ -334,7 +336,7 @@ class App extends Component {
     }
     else {
       // filename = [PatientId.replace("Patient ID:", "").replace(" ", "_"), patientName.replace("Name: ", ""), TestType, formatDate.replace("Test date: ", "")];
-      filename = [PatientId.replace("Patient ID:", "").replace(" ", "_"), patientName.replace("Name: ", "")];
+      filename = [PatientId.replace("Patient ID:", "").replace(" ", "_"), patientName.replace("Name:", ""), location];
     }
 
     //return filename.join('_').toUpperCase();

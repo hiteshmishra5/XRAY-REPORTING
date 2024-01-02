@@ -18,7 +18,9 @@ from .models.audiopatientdata import audioPatientDetails
 from .models.optometrydata import optopatientDetails
 from .models.vitalpatientdata import vitalPatientDetails
 from .models.DICOMData import DICOMData
+from .models.Coordinator import Coordinator
 
+# Register your models here.
 admin.site.register(PersonalInfo)
 admin.site.register(WorkExp)
 admin.site.register(QualificationDetails)
@@ -38,5 +40,5 @@ admin.site.register(Date)
 admin.site.register(Location)
 admin.site.register(ServicesList)
 admin.site.register(DICOMData)
+admin.site.register(Coordinator)
 
-# Register your models here.

@@ -95,7 +95,8 @@ def allocation(request):
     unique_locations = [f"{y.name}" for y in Location.objects.all()]
     return render(request, 'users/allocation.html',{'patient': patients, 'Date': formatted_dates, "Location": unique_locations, "Cities": unique_cities})
 
-
+def allocate(request):
+    return render(request, 'users/allocate.html')
 def ecgallocation(request):
     patients = PatientDetails.objects.all().order_by('-TestDate')
     unique_dates = set()

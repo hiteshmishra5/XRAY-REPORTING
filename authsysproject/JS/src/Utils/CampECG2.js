@@ -108,15 +108,15 @@ class CampECG2 extends Component {
 
 
       //Automation
-      if(frmData.HeartTextFR21 <= 60 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+      if(frmData.HeartTextFR21 < 60 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
         frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.TInversion || frmData.OthersText2)){
         report += "<p>" + "<b>" + "2. Sinus Bradycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "</b>" + "</p>";
       }
-      if(frmData.HeartTextFR21 >= 100 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+      if(frmData.HeartTextFR21 > 100 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
         frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.TInversion || frmData.OthersText2)){
         report += "<p>" + "<b>" + "2. Sinus Tachycardia." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "</b>" + "</p>";
       }
-      if(frmData.PRIntervalFR21 >= 200 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
+      if(frmData.PRIntervalFR21 > 200 && !(frmData.ECGcampNormal || frmData.RhythmRBBB || frmData.TachycardiaRBBB ||
         frmData.BradycardiaRBBB || frmData.Bradycardia || frmData.Tachycardia || frmData.TInversion || frmData.OthersText2)){
         report += "<p>" + "<b>" + "2. first degree AV block." + "</b>" + "</p>" + "<p>" + "<b>" + "3. No significant ST-T changes seen." + "<p>" + "<b>" + "</b>" + "</p>";
       }

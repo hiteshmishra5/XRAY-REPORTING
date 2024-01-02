@@ -35,6 +35,7 @@ urlpatterns = [
     path('xrayallocation', views.xrayallocation, name='xrayallocation'),
     path('audiometry', views.audiometry, name='audiometry'),
     path('allocation', views.allocation, name='coordinator'),
+    path('allocate', views.allocate, name='allocate'),
     path('fetch_patient_data', views.fetch_patient_data, name='fetch_patient_data'),
     path('googledrive/', views.Google.as_view(), name='upload_csv'),
     path('upload_dicom/', views.upload_dicom, name='upload_dicom'),

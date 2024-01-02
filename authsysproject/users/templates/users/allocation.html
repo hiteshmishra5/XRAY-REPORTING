@@ -48,6 +48,16 @@
           border-radius: 5px;
         }
 
+        .allocate-button {
+          background-color: white;
+          color: black;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+        }
+
+
+
         .container {
           margin: 0 auto;
           width: 100%;
@@ -126,7 +136,13 @@
           color: black;
         }
 
-
+        #myInput {
+          padding: 8px;
+          font-size: 15px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          width: 250px;
+        }
 
         table {
             width: 100%;
@@ -160,6 +176,12 @@
         .table-container {
             height: 100%;
             overflow-y: auto;
+        }
+
+        #patientTable {
+          width: 100vw;
+          background-color: white;
+          color: black;
         }
 
         .dropdown-select {
@@ -325,6 +347,9 @@
     </ul>
     <ul>
       <li>
+          <a href="/allocate"><button class="allocate-button btn btn-sm">
+            <strong>Allocate</strong>
+          </button></a>
         <a href="/logout"><button class="logout-button btn btn-sm">
             <strong>Logout</strong>
           </button></a>
@@ -341,16 +366,24 @@
                 <div class="card">
                     <div class="card-body">
                         <h1 class="header">
-                            <span id="count1">Total Cases: <span id="totalRowCount">0</span>
-                          <button type="button" class="refresh" onclick="refreshPage()"><i style="font-size:19px" class="fa">&#xf021;</i></button>
-                            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
-                            <div class="greeting" id="greeting">
-                              {% if user %}
-                              <h6>
-                                <strong>{{ user.first_name }}</strong>,
-                                <span id="greeting-text"></span>
-                              </h6>
-                              {% endif %}
+                            <div class="row-container">
+                                <div class="count-container">
+                                    <span id="count1">Uploaded Cases: <span id="totalRowCount">0</span></span>
+                                </div>
+                                <div class='search-google'>
+                                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
+                                    <button type="button" class="refresh" onclick="refreshPage()">
+                                      <i style="font-size: 19px" class="fa">&#xf021;</i>
+                                    </button>
+                                </div>
+                                <div class="greeting" id="greeting">
+                                  {% if user %}
+                                  <h6>
+                                    <strong>{{ user.first_name }}</strong>,
+                                    <span id="greeting-text"></span>
+                                  </h6>
+                                  {% endif %}
+                                </div>
                             </div>
                         </h1>
                     </div>
@@ -360,7 +393,7 @@
         <div class = 'card'>
             <div class = 'card-body'>
                     <div class="table-container">
-                        <table>
+                        <table id="patientTable">
                             <thead>
                                 <tr>
                                     <th>Patient ID</th>
@@ -462,6 +495,33 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("patientTable");
+          tr = table.getElementsByTagName("tr");
+
+          for (i = 1; i < tr.length; i++) {
+            var found = false;
+            var columns = tr[i].getElementsByTagName("td");
+            for (var j = 0; j < columns.length - 1; j++) { // Exclude the last column (Actions)
+              td = columns[j];
+              if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                  found = true;
+                  break;
+                }
+              }
+            }
+            if (found) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
 
         function callGoogleDrive() {
             $.ajax({

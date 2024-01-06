@@ -77,7 +77,7 @@
 
     th,
     td {
-      padding: 10px;
+      padding: 5px;
       text-align: left;
       border-bottom: 1px solid #ccc;
     }
@@ -168,11 +168,6 @@
     .filter-dropdown-container {
       display: flex;
       align-items: center;
-    }
-
-    .filter-dropdown-container>div {
-      margin-right: 10px;
-      /* Adjust this value to control the space between the "Date" header and the dropdown */
     }
 
     .reportButton {
@@ -383,7 +378,7 @@
     }
 
     .filter-dropdown-container>div {
-      margin-right: 10px;
+      margin-right: 3px;
       /* Adjust this value to control the space between the "Date" header and the dropdown */
     }
 
@@ -489,15 +484,12 @@
             <h1 class="header">
                 <div class="row-container">
                   <div class="count-container">
-                    <span id="count1"><strong>Total Cases:</strong> <span id="totalRowCount">0</span></span>
+                    <span id="count1"><strong>Allocated Cases:</strong> <span id="totalRowCount">0</span></span>
                     <span id="count2"><strong>Reported Cases:</strong> <span id="reportedRowCount">0</span></span>
                   </div>
                   <div class='search-google'>
                     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date"
                       title="Type in a name">
-                    <button type="button" class="refresh" onclick="refreshPage()">
-                      <i style="font-size: 19px" class="fa">&#xf021;</i>
-                    </button>
                   </div>
 
                   <div class="greeting" id="greeting">
@@ -727,42 +719,6 @@
 
 
   <script>
-    function callGoogleDrive() {
-      $.ajax({
-        type: "GET",
-        url: "/googledrive/",
-        success: function (response) {
-          console.log(response.message); // Handle the response from the server if needed
-        },
-        error: function () {
-          console.error("Failed to call GoogleDrive() function.");
-        },
-      });
-    }
-
-    function refreshPage() {
-      // Call GoogleDrive() before reloading the page
-      callGoogleDrive();
-
-      // Reload the page
-      location.reload();
-
-      // Show the popup message
-      var popup = document.getElementById("popup-message");
-      popup.style.display = "block";
-
-      // Hide the popup after a certain time (e.g., 3 seconds)
-      setTimeout(function () {
-        popup.style.display = "none";
-      }, 3000); // 3000 milliseconds = 3 seconds
-
-      // Reload the page after 5 minutes (300000 milliseconds)
-      setTimeout(function () {
-        location.reload();
-      }, 300000);
-    }
-
-    setInterval(refreshPage, 300000);
 
     // Function to show/hide the scroll-to-top button based on the scroll position
     function toggleScrollToTopButton() {

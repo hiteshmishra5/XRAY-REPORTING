@@ -49,7 +49,11 @@ from users.models.Date import Date
 from datetime import datetime
 from users.models.Location import Location
 from users.models.City import City
+from users.models.Client import Client
 from django.views.decorators.http import require_POST
+from django.shortcuts import redirect
+from functools import wraps
+
 
 def login(request):
     if request.method == 'POST':
@@ -57,7 +61,6 @@ def login(request):
         password = request.POST['password']
 
         user = authenticate(request, username=email, password=password)
-        print(user)
         if user is not None:
             ContribLogin(request, user)
             group = user.groups.values_list('name', flat=True).first()
@@ -70,8 +73,12 @@ def login(request):
                 return redirect('xrayallocation')
             elif group == 'audiometrist':
                 return redirect('audiometry')
-            elif group == 'coordinator':
-                return redirect('coordinator')
+            elif group == 'ecgcoordinator':
+                return redirect('ecgcoordinator')
+            elif group == 'xraycoordinator':
+                return redirect('xraycoordinator')
+            elif group == 'technician':
+                return redirect('upload_dicom')
             else:
                 return redirect('reportingbot')
         else:
@@ -80,12 +87,34 @@ def login(request):
     return render(request, 'users/login.html')
 
 
+
+def user_type_required(user_type):
+    def decorator(view_func):
+        @wraps(view_func)
+        def _wrapped_view(request, *args, **kwargs):
+            if request.user.is_authenticated and request.user.groups.filter(name=user_type).exists():
+                return view_func(request, *args, **kwargs)
+            else:
+
+                return redirect('login')
+        return _wrapped_view
+    return decorator
+
 def logout(request):
     ContribLogout(request)
     return redirect('login')
 
+@user_type_required('ecgcoordinator')
 def allocation(request):
     patients = PatientDetails.objects.all().order_by('-TestDate')  # Sort by date in ascending order
+    count_cases = PatientDetails.objects.all().count()
+    total_reported_patients = PatientDetails.objects.filter(cardiologist__isnull=False, isDone=True).count()
+    total_unreported_and_unallocated_patients = PatientDetails.objects.filter(cardiologist=None, isDone=False).count()
+    total_unreported_and_allocated_patients = PatientDetails.objects.filter(cardiologist__isnull=False, isDone=False).count()
+    total_unreported_patients = total_unreported_and_unallocated_patients + total_unreported_and_allocated_patients
+    total_cases = {'total_reported': total_reported_patients, 'total_unreported': total_unreported_patients}
+    cardiologist_group = Group.objects.get(name='cardiologist')
+    cardiologists_objects = cardiologist_group.user_set.all()
     unique_dates = set()
     for patient in patients:
         unique_dates.add(patient.date.date_field)
@@ -93,27 +122,274 @@ def allocation(request):
     formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
     unique_cities = [f"{x.name}" for x in City.objects.all()]
     unique_locations = [f"{y.name}" for y in Location.objects.all()]
-    return render(request, 'users/allocation.html',{'patient': patients, 'Date': formatted_dates, "Location": unique_locations, "Cities": unique_cities})
+    return render(request, 'users/allocation.html',{'total': total_cases, 'count': count_cases, 'patients': patients, 'cardiologists': cardiologists_objects, 'Date': formatted_dates, "Location": unique_locations, "Cities": unique_cities})
 
-def allocate(request):
-    return render(request, 'users/allocate.html')
-def ecgallocation(request):
-    patients = PatientDetails.objects.all().order_by('-TestDate')
-    unique_dates = set()
-    for patient in patients:
-        unique_dates.add(patient.date.date_field)
-    sorted_unique_dates = sorted(unique_dates, reverse=False)
-    formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
-    unique_location = Location.objects.all()
-    return render(request, 'users/ecgallocation.html', {'patients': patients, 'Date': formatted_dates, "Location": unique_location})
-
-def xrayallocation(request):
+@user_type_required('xraycoordinator')
+def allocation1(request):
     patients = DICOMData.objects.all().order_by('-study_date')
+    count_cases = DICOMData.objects.all().count()
+    total_reported_patients = DICOMData.objects.filter(radiologist__isnull=False, isDone=True).count()
+    total_unreported_and_unallocated_patients = DICOMData.objects.filter(radiologist=None, isDone=False).count()
+    total_unreported_and_allocated_patients = DICOMData.objects.filter(radiologist__isnull=False, isDone=False).count()
+    total_unreported_patients = total_unreported_and_unallocated_patients + total_unreported_and_allocated_patients
+    total_cases = {'total_reported': total_reported_patients, 'total_unreported': total_unreported_patients }
+    radiologist_group = Group.objects.get(name='cardiologist2')
+    radiologist_objects = radiologist_group.user_set.all()
     unique_dates = set()
     for patient in patients:
         unique_dates.add(patient.study_date)
     sorted_unique_dates = sorted(unique_dates, reverse=False)
-    return render(request, 'users/xrayallocation.html', {'patients': patients, 'Date': sorted_unique_dates})
+    return render(request, 'users/allocation1.html', {'total': total_cases, 'count': count_cases, 'patients': patients, 'Date': sorted_unique_dates, 'radiologists': radiologist_objects})
+
+
+@user_type_required('ecgcoordinator')
+def allocate(request):
+    cardiologist_group = Group.objects.get(name='cardiologist')
+    cardiologists_objects = cardiologist_group.user_set.all()
+
+    total_unallocated_patients = PatientDetails.objects.filter(cardiologist=None, isDone=False)
+    total_allocated_patients = PatientDetails.objects.filter(cardiologist__isnull=False, isDone=False)
+
+
+    total_client = Client.objects.all()
+    total_cities = City.objects.all()
+    total_locations = Location.objects.all()
+    total_dates = Date.objects.all()
+
+    context = {
+        'cardiologists': cardiologists_objects,
+        'unallocated_patients': total_unallocated_patients,
+        'allocated_patients': total_allocated_patients,
+        'cities': total_cities,
+        'clients': total_client,
+        'locations': total_locations,
+        'dates': total_dates,
+    }
+
+    if 'name' in request.POST:
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        client = Client(
+            registration_type_id=3,
+            name=name,
+            email=email,
+            password=password,
+        )
+        client.save()
+        return redirect("allocate")
+
+    elif 'city_name' in request.POST:
+        client_id = request.POST.get("client")
+        city_name = request.POST.get("city_name")
+        client = Client.objects.get(pk=client_id)
+        city = City(client=client, name=city_name)
+        city.save()
+
+        return redirect("allocate")
+
+    elif "location_name" in request.POST:
+            city_id = request.POST.get('city')
+            location_name = request.POST.get('location_name')
+            city = City.objects.get(pk=city_id)
+            location = Location(city=city, name=location_name)
+            location.save()
+
+            return redirect("allocate")
+
+
+    elif 'delete_client' in request.POST:
+        client_id = request.POST.get("delete_client")
+        if client_id:
+            client = Client.objects.filter(pk=client_id).first()
+            if client:
+                client.delete()
+
+            return redirect("allocate")
+
+    elif 'delete_city' in request.POST:
+        city_id = request.POST.get("delete_city")
+        if city_id:
+            city = City.objects.filter(pk=city_id).first()
+            if city:
+                city.delete()
+
+            return redirect("allocate")
+
+    elif 'delete_location' in request.POST:
+        location_id = request.POST.get("delete_location")
+        if location_id:
+            location = Location.objects.filter(pk=location_id).first()
+            if location_id:
+                location.delete()
+
+            return redirect("allocate")
+
+    action = request.POST.get('action')
+    if action in ('allocate', 'unallocate'):
+        selected_cardiologist_email = request.POST.get('cardiologist')
+        if selected_cardiologist_email:
+            cardiologist_group = Group.objects.get(name='cardiologist')
+            cardiologist_user = get_object_or_404(cardiologist_group.user_set, email=selected_cardiologist_email)
+
+            # Fetch the corresponding PersonalInfo instance for the selected cardiologist
+            cardiologist = PersonalInfoModel.objects.get(user=cardiologist_user)
+
+            if cardiologist:
+                selected_patient_ids = request.POST.getlist('cases')
+                if selected_patient_ids:
+                    selected_patients = PatientDetails.objects.filter(PatientId__in=selected_patient_ids)
+                    for patient in selected_patients:
+                        if action == 'allocate' and patient.cardiologist != cardiologist:
+                            patient.cardiologist = cardiologist
+                            patient.save()
+                        elif action == 'unallocate' and patient.cardiologist == cardiologist:
+                            patient.cardiologist = None
+                            patient.save()
+
+
+    return render(request, 'users/allocate.html', context)
+
+
+@user_type_required('xraycoordinator')
+def allocate1(request):
+    radiologist_group = Group.objects.get(name='cardiologist2')
+    radiologist_objects = radiologist_group.user_set.all()
+
+    total_unallocated_patients = DICOMData.objects.filter(radiologist=None, isDone=False)
+    total_allocated_patients = DICOMData.objects.filter(radiologist__isnull=False, isDone=False)
+
+    total_client = Client.objects.all()
+    total_cities = City.objects.all()
+    total_locations = Location.objects.all()
+    total_dates = Date.objects.all()
+    context = {
+        'radiologists': radiologist_objects,
+        'unallocated_patients': total_unallocated_patients,
+        'allocated_patients': total_allocated_patients,
+        'cities': total_cities,
+        'clients': total_client,
+        'locations': total_locations,
+        'dates': total_dates,
+    }
+
+    if 'name' in request.POST:
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+
+        client = Client(
+            name=name,
+            email=email,
+            password=password,
+        )
+        client.save()
+        return redirect("allocate1")
+
+    elif 'city_name' in request.POST:
+        client_id = request.POST.get("client")
+        city_name = request.POST.get("city_name")
+        client = Client.objects.get(pk=client_id)
+        city = City(client=client, name=city_name)
+        city.save()
+
+        return redirect("allocate1")
+
+    elif "location_name" in request.POST:
+        city_id = request.POST.get('city')
+        location_name = request.POST.get('location_name')
+        city = City.objects.get(pk=city_id)
+        location = Location(city=city, name=location_name)
+        location.save()
+
+        return redirect("allocate1")
+
+
+    elif 'delete_client' in request.POST:
+        client_id = request.POST.get("delete_client")
+        if client_id:
+            client = Client.objects.filter(pk=client_id).first()
+            if client:
+                client.delete()
+
+            return redirect("allocate1")
+
+    elif 'delete_city' in request.POST:
+        city_id = request.POST.get("delete_city")
+        if city_id:
+            city = City.objects.filter(pk=city_id).first()
+            if city:
+                city.delete()
+
+            return redirect("allocate1")
+
+    elif 'delete_location' in request.POST:
+        location_id = request.POST.get("delete_location")
+        if location_id:
+            location = Location.objects.filter(pk=location_id).first()
+            if location_id:
+                location.delete()
+
+            return redirect("allocate1")
+
+    action = request.POST.get('action')
+    if action in ('allocate', 'unallocate'):
+        selected_radiologist_email = request.POST.get('radiologist')
+        if selected_radiologist_email:
+            radiologist_group = Group.objects.get(name='cardiologist2')
+            radiologist_user = get_object_or_404(radiologist_group.user_set, email=selected_radiologist_email)
+
+            # Fetch the corresponding PersonalInfo instance for the selected cardiologist
+            radiologist = PersonalInfoModel.objects.get(user=radiologist_user)
+
+            if radiologist:
+                selected_patient_ids = request.POST.getlist('cases')
+                if selected_patient_ids:
+                    selected_patients = DICOMData.objects.filter(patient_id__in=selected_patient_ids)
+                    for patient in selected_patients:
+                        if action == 'allocate' and patient.radiologist != radiologist:
+                            patient.radiologist = radiologist
+                            patient.save()
+                        elif action == 'unallocate' and patient.radiologist == radiologist:
+                            patient.radiologist = None
+                            patient.save()
+
+    return render(request, 'users/allocate1.html', context)
+
+
+@user_type_required('cardiologist')
+def ecgallocation(request):
+    cardiologist_group = Group.objects.get(name='cardiologist')
+
+    # Fetch the corresponding PersonalInfo instance for the current user
+    current_user_personal_info = PersonalInfoModel.objects.get(user=request.user)
+
+    allocated_to_current_user = PatientDetails.objects.filter(cardiologist=current_user_personal_info).order_by('-TestDate')
+
+    unique_dates = set()
+    for patient in allocated_to_current_user:
+        unique_dates.add(patient.date.date_field)
+    sorted_unique_dates = sorted(unique_dates, reverse=False)
+    formatted_dates = [date.strftime('%Y-%m-%d') for date in sorted_unique_dates]
+    unique_location = Location.objects.all()
+
+    return render(request, 'users/ecgallocation.html', {'patients': allocated_to_current_user, 'Date': formatted_dates, 'Location': unique_location})
+
+
+@user_type_required('cardiologist2')
+def xrayallocation(request):
+    radiologist_group = Group.objects.get(name='cardiologist2')
+
+    # Fetch the corresponding PersonalInfo instance for the current user
+    current_user_personal_info = PersonalInfoModel.objects.get(user=request.user)
+    allocated_to_current_user = DICOMData.objects.filter(radiologist=current_user_personal_info).order_by('-study_date')
+
+    unique_dates = set()
+    for patient in allocated_to_current_user:
+        unique_dates.add(patient.study_date)
+    sorted_unique_dates = sorted(unique_dates, reverse=False)
+    return render(request, 'users/xrayallocation.html', {'patients': allocated_to_current_user, 'Date': sorted_unique_dates})
 
 @login_required
 def audiometry(request):
@@ -1019,7 +1295,7 @@ def patientDetails(request):
         response = json.loads(response)
         return JsonResponse(status=200, data=response, safe=False)
 
-
+@user_type_required('technician')
 def upload_dicom(request):
     if request.method == 'POST':
         form = DICOMDataForm(request.POST, request.FILES)
@@ -1069,7 +1345,7 @@ def upload_dicom(request):
     else:
         form = DICOMDataForm()
 
-    return render(request, 'users/upload_dicom.html', {'form': form})  
+    return render(request, 'users/upload_dicom.html', {'form': form})
 
 
 

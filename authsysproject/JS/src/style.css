@@ -200,8 +200,11 @@ tbody {
 }
 
 .ck-content .image img {
-  width: 100%;
   margin: 0px !important;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 700px;
 }
 
 @media print {

@@ -56,8 +56,6 @@
           border-radius: 5px;
         }
 
-
-
         .container {
           margin: 0 auto;
           width: 100%;
@@ -117,8 +115,8 @@
           display: flex;
           flex-direction: column;
           align-items: flex-start;
-          background-color: skyblue;
-          border-radius: 10px;
+          background-color: yellow;
+          border-radius: 5px;
           font-family: 'Arial', sans-serif;
         }
 
@@ -127,8 +125,8 @@
         .greeting {
           margin-right: 10px;
           margin-left: 10px;
-          padding: 4px;
-          font-size: 16px;
+          padding: 0px;
+          font-size: 17px;
         }
 
         #totalRowCount,
@@ -250,7 +248,7 @@
         }
 
         .filter-dropdown-container > div {
-            margin-right: 10px; /* Adjust this value to control the space between the "Date" header and the dropdown */
+            margin-right: 3px; /* Adjust this value to control the space between the "Date" header and the dropdown */
         }
 
          .make-report-button {
@@ -368,7 +366,9 @@
                         <h1 class="header">
                             <div class="row-container">
                                 <div class="count-container">
-                                    <span id="count1">Uploaded Cases: <span id="totalRowCount">0</span></span>
+                                  <span id="count1">Uploaded Cases: <strong><span id="totalRowCount">{{count}}</span></span></strong>
+                                  <span id="count1">Reported Cases: <strong><span id="totalRowCount">{{ total.total_reported }}</span></span></strong>
+                                  <span id="count1">Unreported Cases: <strong><span id="totalRowCount">{{ total.total_unreported }}</span></span></strong>
                                 </div>
                                 <div class='search-google'>
                                     <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
@@ -420,8 +420,8 @@
                                             <div class="dropdown-select1" id="filter-allocate-dropdown-allocate">
                                                 <select id="filter-allocate-select-allocate" class="form-control">
                                                     <option value="">All</option>
-                                                    {% for cardiologist in unique_cardiologists %}
-                                                        <option value="{{ cardiologist }}">{{ cardiologist }}</option>
+                                                    {% for cardiologist in cardiologists %}
+                                                        <option value="{{ cardiologist }}">{{ cardiologist.first_name }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -457,7 +457,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for patient in patient %}
+                                {% for patient in patients %}
                                     <tr data-date="{{ patient.date.date_field }}" data-cardiologist-first="{{ patient.cardiologist.first_name }}"
                                         data-cardiologist-last="{{ patient.cardiologist.last_name }}">
                                         <td>{{ patient.PatientId }}</td>
@@ -466,18 +466,19 @@
                                         <td>{{ patient.gender }}</td>
                                         <td>{{ patient.HeartRate }}</td>
                                         <td>{{ patient.TestDate }}</td>
-                                        <td data-cardiologist="{{ patient.cardiologist.first_name }} {{ patient.cardiologist.last_name }}">
+                                        <td data-cardiologist="{{ patient.cardiologist }}">
                                             {% if patient.cardiologist %}
-                                            {{ patient.cardiologist.first_name }} {{ patient.cardiologist.last_name }}
-                                            <input type="hidden" name="patient_id" value="{{ patient.id }}">
-                                            <button class="btn-custom-sm unallocate-button" style="outline: none;" type="button" onclick="unallocatePatient({{ patient.id }})">
-                                                Unallocate
-                                            </button>
+                                                {{ patient.cardiologist.user.first_name }}
                                             {% endif %}
                                         </td>
                                         <td>{{ patient.date.location.city.name }}</td>
                                         <td>{{ patient.date.location }}</td>
-                                        <td>Unreported</td>
+                                        <td>{% if patient.isDone == True %}
+                                          Reported
+                                          {% else %}
+                                          Unreported
+                                          {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -584,27 +585,6 @@
 
         toggleScrollToTopButton();
 
-
-        // Function to handle unallocation when "Unallocate" button is clicked
-        function unallocatePatient(patientId) {
-            $.ajax({
-                type: "POST",
-
-                data: {
-                    'patient_id': patientId,
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function (data) {
-
-                    location.reload();
-                },
-                error: function () {
-                    // Handle error if unallocation fails
-                    alert("Failed to unallocate the patient");
-                }
-            });
-        }
-
         function getGreeting() {
             var currentTime = new Date();
             var currentHour = currentTime.getUTCHours() + 6; //get Indian time
@@ -656,9 +636,7 @@
                 if (cardiologist) {
                     // Filter rows based on the selected cardiologist
                     $("tbody tr").each(function () {
-                        var rowCardiologistFirst = $(this).data("cardiologist-first");
-                        var rowCardiologistLast = $(this).data("cardiologist-last");
-                        var rowCardiologist = rowCardiologistFirst + " " + rowCardiologistLast;
+                        var rowCardiologist = $(this).find("td[data-cardiologist]").data("cardiologist");
                         if (rowCardiologist !== cardiologist) {
                             $(this).hide();
                         }
@@ -666,8 +644,7 @@
                 }
             }
 
-
-             function filterTableByLocation(location) {
+            function filterTableByLocation(location) {
                 // Show all rows initially
                 $("tbody tr").show();
 

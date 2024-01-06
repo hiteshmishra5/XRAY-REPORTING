@@ -84,7 +84,7 @@
 
     th,
     td {
-      padding: 10px;
+      padding: 5px;
       text-align: left;
       border-bottom: 1px solid #ccc;
     }
@@ -178,7 +178,7 @@
     }
 
     .filter-dropdown-container>div {
-      margin-right: 10px;
+      margin-right: 3px;
       /* Adjust this value to control the space between the "Date" header and the dropdown */
     }
 
@@ -652,6 +652,25 @@
         });
       }
     });
+
+
+    // Move reported rows to the bottom on page load
+    moveReportedRowsToBottom();
+
+    function moveReportedRowsToBottom() {
+      // Get all rows in the table
+      var rows = $('#patientTable tbody tr');
+
+      // Separate reported rows and non-reported rows
+      var reportedRows = rows.filter(':has(.reportButton:contains("Reported"))');
+      var nonReportedRows = rows.not(reportedRows);
+
+      // Append reported rows after non-reported rows
+      $('#patientTable tbody').append(reportedRows);
+
+      // Update row counts
+      updateRowCounts();
+    }
 
 
     // Function to update the counts of rows with 'Report' and 'Reported' button states

@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>XRAi Allocation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 30px;
+            width: 80rem;
+            max-width: 100%;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .logout-button {
+          background-color: red;
+          color: white;
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 7px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            height: 80vh;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .allocate-select {
+            position: relative;
+            width: 100px;
+        }
+
+        .allocate-select select {
+            width: 175%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 9rem;
+        }
+
+        .allocate-select select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        .dropdown-select {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .dropdown-select select {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .dropdown-select select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        .dashboard-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            border-radius: 5px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            display: inline;
+            margin-right: 10px;
+        }
+
+        .navbar ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        /* Custom Styles for Dropdowns */
+        .row .col .dropdown-select select {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.2s;
+        }
+
+        .row .col .dropdown-select select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        /* Custom Styles for Date Input */
+        .row .col input[type="date"] {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.2s;
+        }
+
+        .row .col input[type="date"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        .allocate-button {
+            background-color: orange;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 170px;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .allocate-button:hover {
+            background-color: blue;
+        }
+
+        /* Custom Styles for Allocate Button */
+        .row .col .unallocate-button {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 160px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-select {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Style for the plus button */
+        .plus-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        /* Style for the plus icon */
+        .fa-plus {
+            font-size: 18px;
+        }
+
+
+         .form-input {
+            width: 100%;
+            padding: 4px 80px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        /* Center the modal content */
+        .modal-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border-radius: 10px 10px 10 0; /* Rounded top corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            display: none;
+        }
+
+
+        .my-form-group {
+            margin-bottom: 10px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: green;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        .popup-allocate {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: yellow;
+            color: black;
+            padding: 10px 15px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+
+    </style>
+</head>
+<body>
+     <nav class="navbar">
+    <ul>
+      <li>
+        <a href="/allocation1"><strong>XRAi Allocation</strong></a>
+      </li>
+    </ul>
+     <ul>
+         <li>
+            <a href="/logout"><button class="logout-button btn btn-sm">
+            <strong>Logout</strong>
+            </button></a>
+         </li>
+     </ul>
+  </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="header">Allocate To Radiologist</h1>
+
+                        <form id="allocate-form" method="post">
+                            {% csrf_token %}
+                            <div class="dropdown-select">
+                                <select name="radiologist" required>
+                                    <option value="">Select Radiologist</option>
+                                    {% for radiologist in radiologists %}
+                                        <option value="{{ radiologist.email }}">{{ radiologist.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="dropdown-select" id="client-dropdown">
+                                        <select id="client-select">
+                                            <option value="">Select Client</option>
+                                            {% for client in clients %}
+                                                <option value="{{ client.id }}">{{ client.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                            <button class="plus-button" style="outline: none;" onclick="openClientModel()">
+                                                <i class="fa-solid fa-plus" style="color: #511f1f; border-radius: 25%; padding: 4px;"></i>
+                                            </button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="dropdown-select" id="city-dropdown">
+                                        <select id="city-select">
+                                            <option value="">Select City</option>
+                                            {% for city in cities %}
+                                                <option value="{{ city.id }}" data-client="{{ city.client_id }}">{{ city.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                            <button class="plus-button" style="outline: none;" onclick="openCityModal()">
+                                                <i class="fa-solid fa-plus" style="color: #511f1f; border-radius: 25%; padding: 4px;"></i>
+                                            </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="dropdown-select" id="location-dropdown">
+                                        <select id="location-select">
+                                            <option value="">Select Location</option>
+                                            {% for location in locations %}
+                                                <option value="{{ location.id }}" data-city="{{ location.city_id }}">{{ location.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                            <button class="plus-button" style="outline: none;" onclick="openLocationModal()">
+                                                <i class="fa-solid fa-plus" style="color: #511f1f; border-radius: 25%; padding: 4px;"></i>
+                                            </button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group" id="date-dropdown">
+                                        <input type="date" id="date-select" class="form-control" pattern="\d{4}-\d{2}-\d{2}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="dropdown-select">
+                                        <select id="num-cases-select">
+                                            <option value="">Select Number of Cases</option>
+                                            <option value="10">10</option>
+                                            <option value="20">20</option>
+                                            <option value="30">30</option>
+                                            <option value="40">40</option>
+                                            <option value="50">50</option>
+                                            <option value="60">60</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="allocate-select">
+                                        <select id="cases-dropdown" name="cases" multiple required>
+                                            <option value="">Unallocated Cases</option>
+                                            {% for patient in unallocated_patients %}
+                                                <!-- Format the date in YYYY-MM-DD format -->
+                                                {% with formatted_date=patient.date.date_field|date:"Y-m-d" %}
+                                                    <option value="{{ patient.patient_id }}"
+                                                            data-client="{{ patient.date.location.city.client_id }}"
+                                                            data-city="{{ patient.date.location.city_id }}"
+                                                            data-location="{{ patient.date.location_id }}"
+                                                            data-date="{{ formatted_date }}">
+                                                        {{ patient.patient_name }} (ID: {{ patient.patient_id }})
+                                                    </option>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="allocate-select">
+                                        <select id="cases-dropdown" name="cases" multiple>
+                                            <option value="">Allocated Cases</option>
+                                            {% for patient in allocated_patients %}
+                                                <!-- Format the date in YYYY-MM-DD format -->
+                                                {% with formatted_date=patient.date.date_field|date:"Y-m-d" %}
+                                                    <option value="{{ patient.patient_id }}"
+                                                            data-client="{{ patient.date.location.city.client_id }}"
+                                                            data-city="{{ patient.date.location.city_id }}"
+                                                            data-location="{{ patient.date.location_id }}"
+                                                            data-date="{{ formatted_date }}">
+                                                        {{ patient.patient_name }} (ID: {{ patient.patient_id }})
+                                                    </option>
+                                                {% endwith %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <input type="hidden" name="action" id="action" value="">
+                            <div class="row">
+                                <div class="col">
+                                    <center><button class="allocate-button" type="submit" onclick="setAction('allocate')">Allocate</button></center>
+                                </div>
+
+                                <div class="col">
+                                    <center><button class="unallocate-button" type="submit" onclick="setAction('unallocate')">Unallocate</button></center>
+                                </div>
+                            </div>
+
+                        </form>
+                        <a href="/allocation1" class="dashboard-link">Go to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="popup-message1" class="popup">
+        <span class="popup-content">New Client has been added successfully.</span>
+    </div>
+    <div id="popup-message2" class="popup">
+        <span class="popup-content">New City has been added successfully.</span>
+    </div>
+    <div id="popup-message3" class="popup">
+        <span class="popup-content">New Location has been added successfully.</span>
+    </div>
+
+    <div id="popup-message4" class="popup-allocate">
+        <span class="popup-content">Case has been allocated.</span>
+    </div>
+     <div id="myClientModal" class="modal" style="max-width: 350px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -43%);">
+        <div class="modal-header">
+            <span class="close" id="closeClientModal"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Add New Client</h3>
+                <form id="client-form" action="{% url 'allocate1' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group my-form-group">
+                        <label for="client-name">Client Name</label>
+                        <input type="text" id="client-name" name="name" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="form-group my-form-group">
+                        <label for="client-email">Email</label>
+                        <input type="text" id="client-email" name="email" class="form-control form-control-sm" required>
+                    </div>
+                    <div class="form-group my-form-group">
+                        <label for="client-password">Password</label>
+                        <input type="password" id="client-password" name="password" class="form-control form-control-sm" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" id="submit-client" class="btn btn-green mr-1" onclick="popupMessage1()" style="background-color: green; color: white; display: block; margin: 0 auto;">Add</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="delete-client-button" class="btn btn-orange ml-1" style="background-color: orange; color: white; display: block; margin: 0 auto;">Remove</button>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="myCityModal" class="modal" style="max-width: 350px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -43%);">
+        <div class="modal-header">
+            <span class="close" id="closeCityModal"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Add New City</h3>
+                <form id="city-form" action="{% url 'allocate1' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group my-form-group">
+                        <label for="client-select">Select Client</label>
+                        <select id="client-select1" name="client" class="form-control form-control-sm" required>
+                            <option value="" selected disabled>Select Client</option>
+                            {% for client in clients %}
+                                <option value="{{ client.id }}">{{ client.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group my-form-group">
+                        <label for="city-name">City Name</label>
+                        <input type="text" id="city-name" name="city_name" class="form-control form-control-sm" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <button type="button" id="submit-city" class="btn btn-green mr-1" onclick="submitCityForm(); popupMessage2();" style="background-color: green; color: white; display: block; margin: 0 auto;">Add</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" id="delete-city-button" class="btn btn-orange ml-1" style="background-color: orange; color: white; display: block; margin: 0 auto;">Remove</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="myLocationModal" class="modal" style="max-width: 350px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -43%);">
+    <div class="modal-header">
+        <span class="close" id="closeLocationModal"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Add New Location</h3>
+            <form id="location-form" action="{% url 'allocate1' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group my-form-group">
+                    <label for="city-select">Select City</label>
+                    <select id="city-select1" name="city" class="form-control form-control-sm" required>
+                        <option value="" selected disabled>Select City</option>
+                        {% for city in cities %}
+                            <option value="{{ city.id }}">{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group my-form-group">
+                    <label for="location-name">Location Name</label>
+                    <input type="text" id="location-name" name="location_name" class="form-control form-control-sm" required>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="button" id="submit-location" class="btn btn-green mr-1" onclick="submitLocationForm(); popupMessage2();" style="background-color: green; color: white; display: block; margin: 0 auto;">Add</button>
+                    </div>
+                    <div class="col">
+                        <button type="button" id="delete-location-button" class="btn btn-orange ml-1" style="background-color: orange; color: white; display: block; margin: 0 auto;">Remove</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!--  Delete cardiologist form   -->
+    <div class="modal" id="delete-cardiologist-modal" style="max-width: 400px; position: fixed; top: 70%; left: 50%; transform: translate(-50%, -43%);">
+        <div class="modal-header">
+            <span class="close" id="closeDeleteModal"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Delete Cardiologist</h3>
+                <form id="delete-cardiologist-form" method="post" action="{% url 'allocate1' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="delete-cardiologist-select">Select Cardiologist</label>
+                        <select id="delete-cardiologist-select" name="delete_cardiologist" class="form-control form-control-sm">
+                            <option value="">Select Cardiologist</option>
+                            {% for cardiologist in cardiologists %}
+                                <option value="{{ cardiologist.id }}">{{ cardiologist.first_name }} {{ cardiologist.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-red btn-sm" style="background-color: red; color: white; display: block; margin: 0 auto;">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="delete-client-modal" style="max-width: 400px; position: fixed; top: 70%; left: 50%; transform: translate(-50%, -43%);">
+    <div class="modal-header">
+        <span class="close" id="closeDeleteClientModal"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Delete Client</h3>
+            <form id="delete-client-form" method="post" action="{% url 'allocate1' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="delete-client-select">Select Client</label>
+                    <select id="delete-client-select" name="delete_client" class="form-control form-control-sm">
+                        <option value="">Select Client</option>
+                        {% for client in clients %}
+                            <option value="{{ client.id }}">{{ client.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-red btn-sm" style="background-color: red; color: white; display: block; margin: 0 auto;">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="modal" id="delete-city-modal" style="max-width: 400px; position: fixed; top: 70%; left: 50%; transform: translate(-50%, -43%);">
+    <div class="modal-header">
+        <span class="close" id="closeDeleteCityModal"><i class="fa-solid fa-xmark"></i></span>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Delete City</h3>
+            <form id="delete-city-form" method="post" action="{% url 'allocate1' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="delete-city-select">Select City</label>
+                    <select id="delete-city-select" name="delete_city" class="form-control form-control-sm">
+                        <option value="">Select City</option>
+                        {% for city in cities %}
+                            <option value="{{ city.id }}">{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-red btn-sm" style="background-color: red; color: white; display: block; margin: 0 auto;">Delete</button>
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="modal" id="delete-location-modal" style="max-width: 400px; position: fixed; top: 70%; left: 50%; transform: translate(-50%, -43%);">
+        <div class="modal-header">
+            <span class="close" id="closeDeleteLocationModal"><i class="fa-solid fa-xmark"></i></span>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Delete Location</h3>
+                <form id="delete-location-form" method="post" action="{% url 'allocate1' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="delete-location-select">Select Location</label>
+                        <select id="delete-location-select" name="delete_location" class="form-control form-control-sm">
+                            <option value="">Select Location</option>
+                            {% for location in locations %}
+                                <option value="{{ location.id }}">{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-red btn-sm" style="background-color: red; color: white; display: block; margin: 0 auto;">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script>
+
+        //Successful message after creating an account for radiologist
+        function popupMessage() {
+            // Show the popup message
+            var popup = document.getElementById("popup-message");
+            popup.style.display = "block";
+
+            // Hide the popup after a certain time (e.g., 3 seconds)
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            // Reload the page
+            location.reload();
+        }
+
+        //Successful message after creating an account for Client
+        function popupMessage1() {
+            // Show the popup message
+            var popup = document.getElementById("popup-message1");
+            popup.style.display = "block";
+
+            // Hide the popup after a certain time (e.g., 3 seconds)
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            // Reload the page
+            location.reload();
+        }
+
+        //Successful message after adding new city.
+        function popupMessage2() {
+            // Show the popup message
+            var popup = document.getElementById("popup-message2");
+            popup.style.display = "block";
+
+            // Hide the popup after a certain time (e.g., 3 seconds)
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+            // Reload the page
+            location.reload();
+        }
+
+         //Allocate or Unallocate
+        function setAction(action) {
+            var cardiologistSelect = document.querySelector('select[name="radiologist"]');
+            var casesSelect = document.querySelector('select[name="cases"]');
+
+            console.log(cardiologistSelect)
+            if (cardiologistSelect.value === '') {
+                alert("Please select Radiologist and Cases before proceeding");
+                return;
+            }
+
+            var actionInput = document.getElementById("action");
+            actionInput.value = action;
+
+            // Submit the form programmatically
+            document.getElementById("allocate-form").submit();
+
+
+            // Show the popup message
+            var popup = document.getElementById("popup-message4");
+            popup.style.display = "block";
+
+            // Hide the popup after a certain time (e.g., 3 seconds)
+            setTimeout(function() {
+                popup.style.display = "none";
+            }, 3000); // 3000 milliseconds = 3 seconds
+
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteCardiologistButton = document.getElementById("delete-cardiologist-button");
+            const deleteCardiologistModal = document.getElementById("delete-cardiologist-modal");
+            const closeDeleteModalButton = document.getElementById("closeDeleteModal");
+
+            deleteCardiologistButton.addEventListener("click", function() {
+                deleteCardiologistModal.style.display = "block";
+            });
+
+            closeDeleteModalButton.addEventListener("click", function() {
+                deleteCardiologistModal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === deleteCardiologistModal) {
+                    deleteCardiologistModal.style.display = "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteClientButton = document.getElementById("delete-client-button");
+            const deleteClientModal = document.getElementById("delete-client-modal");
+            const closeDeleteClientModalButton = document.getElementById("closeDeleteClientModal");
+
+            deleteClientButton.addEventListener("click", function() {
+                deleteClientModal.style.display = "block";
+            });
+
+            closeDeleteClientModalButton.addEventListener("click", function() {
+                deleteClientModal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === deleteClientModal) {
+                    deleteClientModal.style.display = "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteCityButton = document.getElementById("delete-city-button");
+            const deleteCityModal = document.getElementById("delete-city-modal");
+            const closeDeleteCityModalButton = document.getElementById("closeDeleteCityModal");
+
+            deleteCityButton.addEventListener("click", function() {
+                deleteCityModal.style.display = "block";
+            });
+
+            closeDeleteCityModalButton.addEventListener("click", function() {
+                deleteCityModal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === deleteCityModal) {
+                    deleteCityModal.style.display = "none";
+                }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deleteLocationButton = document.getElementById("delete-location-button");
+            const deleteLocationModal = document.getElementById("delete-location-modal");
+            const closeDeleteLocationModalButton = document.getElementById("closeDeleteLocationModal");
+
+            deleteLocationButton.addEventListener("click", function() {
+                deleteLocationModal.style.display = "block";
+            });
+
+            closeDeleteLocationModalButton.addEventListener("click", function() {
+                deleteLocationModal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === deleteLocationModal) {
+                    deleteLocationModal.style.display = "none";
+                }
+            });
+        });
+
+
+
+
+
+
+        // Function to filter cities based on the selected client
+        function filterCitiesByClient() {
+            var selectedClientId = $("#client-select").val();
+            var $citySelect = $("#city-select");
+
+            // Reset city dropdown
+            $citySelect.val("");
+
+            // Show all cities initially
+            $citySelect.find("option").show();
+
+            if (selectedClientId) {
+                // Hide cities that do not belong to the selected client
+                $citySelect.find("option:not([data-client='" + selectedClientId + "'])").hide();
+            }
+
+            // Trigger the change event for the city dropdown to update locations and dates
+            $citySelect.trigger("change");
+        }
+
+        // Function to filter locations based on the selected city
+        function filterLocationsByCity() {
+            var selectedCityId = $("#city-select").val();
+            var $locationSelect = $("#location-select");
+
+            // Reset location dropdown
+            $locationSelect.val("");
+
+            // Show all locations initially
+            $locationSelect.find("option").show();
+
+            if (selectedCityId) {
+                // Hide locations that do not belong to the selected city
+                $locationSelect.find("option:not([data-city='" + selectedCityId + "'])").hide();
+            }
+
+            // Trigger the change event for the location dropdown to update dates
+            $locationSelect.trigger("change");
+        }
+
+        // Function to filter dates based on the selected location and client
+        function filterDatesByLocationAndClient() {
+            var selectedLocationId = $("#location-select").val();
+            var selectedClientId = $("#client-select").val();
+            var $dateSelect = $("#date-select");
+
+            // Reset date dropdown
+            $dateSelect.val("");
+
+            // Show all dates initially
+            $dateSelect.find("option").show();
+
+            if (selectedLocationId || selectedClientId) {
+                // Hide dates that do not belong to the selected location and client
+                $dateSelect.find("option").each(function () {
+                    var dateClientId = $(this).data("client");
+                    var dateLocationId = $(this).data("location");
+
+                    if (
+                        (selectedClientId && dateClientId != selectedClientId) ||
+                        (selectedLocationId && dateLocationId != selectedLocationId)
+                    ) {
+                        $(this).hide();
+                    }
+                });
+
+                // Disable dates that are not in the filtered list
+                $dateSelect.find("option:hidden").prop("disabled", true);
+                $dateSelect.find("option:visible").prop("disabled", false);
+            } else {
+                // If neither location nor client is selected, enable all dates
+                $dateSelect.find("option").prop("disabled", false);
+            }
+
+            // Trigger the change event for the date dropdown to update patients
+            $dateSelect.trigger("change");
+        }
+
+        // Function to filter patients based on the selected client, city, location, and date
+        function filterPatientsByCombination() {
+            var selectedClientId = $("#client-select").val();
+            var selectedCityId = $("#city-select").val();
+            var selectedLocationId = $("#location-select").val();
+            var selectedDate = $("#date-select").val();
+            var $casesSelect = $("#cases-dropdown");
+
+            // Show all patients initially
+            $casesSelect.find("option").show();
+
+            // Filter patients based on the selected client, city, location, and date
+            if (selectedClientId || selectedCityId || selectedLocationId || selectedDate) {
+                $casesSelect.find("option").each(function () {
+                    var patientClientId = $(this).data("client");
+                    var patientCityId = $(this).data("city");
+                    var patientLocationId = $(this).data("location");
+                    var patientDate = $(this).data("date");
+
+                    // Hide patients that do not match the selected criteria
+                    if (
+                        (selectedClientId && patientClientId != selectedClientId) ||
+                        (selectedCityId && patientCityId != selectedCityId) ||
+                        (selectedLocationId && patientLocationId != selectedLocationId) ||
+                        (selectedDate && patientDate !== selectedDate)
+                    ) {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Trigger the change event for the patient dropdown to update other filters
+            $casesSelect.trigger("change");
+
+            // Update the "Select Number of Cases" dropdown based on the filtered patient count
+            updatePatientDropdown();
+        }
+
+        function updatePatientDropdown() {
+            var $casesSelect = $("#cases-dropdown");
+            var selectedClientId = $("#client-select").val();
+            var selectedCityId = $("#city-select").val();
+            var selectedLocationId = $("#location-select").val();
+            var selectedDate = $("#date-select").val();
+            var selectedNumCases = parseInt($("#num-cases-select").val(), 10);
+
+            // Show all patients in the "Select Cases" dropdown if the "Select Number of Cases" dropdown is not selected
+            if (!selectedNumCases) {
+                $casesSelect.find("option").each(function () {
+                    var patientClientId = $(this).data("client");
+                    var patientCityId = $(this).data("city");
+                    var patientLocationId = $(this).data("location");
+                    var patientDate = $(this).data("date");
+
+                    if (
+                        (!selectedClientId || patientClientId == selectedClientId) &&
+                        (!selectedCityId || patientCityId == selectedCityId) &&
+                        (!selectedLocationId || patientLocationId == selectedLocationId) &&
+                        (!selectedDate || patientDate == selectedDate)
+                    ) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            } else {
+                // Filter patients based on the selected client, city, location, and date
+                var filteredPatients = $casesSelect.find("option").filter(function () {
+                    var patientClientId = $(this).data("client");
+                    var patientCityId = $(this).data("city");
+                    var patientLocationId = $(this).data("location");
+                    var patientDate = $(this).data("date");
+
+                    return (
+                        (!selectedClientId || patientClientId == selectedClientId) &&
+                        (!selectedCityId || patientCityId == selectedCityId) &&
+                        (!selectedLocationId || patientLocationId == selectedLocationId) &&
+                        (!selectedDate || patientDate == selectedDate)
+                    );
+                });
+
+                // Hide all patients in the "Select Cases" dropdown
+                $casesSelect.find("option").hide();
+
+
+                // Show only the first 'selectedNumCases' patients in the filtered list
+                filteredPatients.slice(0, selectedNumCases).each(function (index) {
+                    $(this).show();
+                });
+
+            }
+
+            // Automatically select the first visible patient option in the "Select Cases" dropdown
+            $casesSelect.val($casesSelect.find("option:visible:not([value='']):first").val());
+        }
+
+
+        $(document).ready(function () {
+            // Event listener for the "Select Client" dropdown
+            $("#client-select").on("change", function () {
+                // Filter cities based on the selected client
+                filterCitiesByClient();
+
+                // Filter patients based on the selected client, city, location, and date
+                filterPatientsByCombination();
+            });
+
+            // Event listener for the "Select City" dropdown
+            $("#city-select").on("change", function () {
+                // Filter locations based on the selected city
+                filterLocationsByCity();
+
+                // Filter patients based on the selected client, city, location, and date
+                filterPatientsByCombination();
+            });
+
+            // Event listener for the "Select Location" and "Select Client" dropdowns
+            $("#location-select, #client-select").on("change", function () {
+                // Filter dates based on the selected location and client
+                filterDatesByLocationAndClient();
+
+                // Filter patients based on the selected client, city, location, and date
+                filterPatientsByCombination();
+            });
+
+            // Event listener for the "Select Date" dropdown
+            $("#date-select").on("change", function () {
+                // Filter patients based on the selected client, city, location, and date
+                filterPatientsByCombination();
+            });
+
+             // Event listener for the "Select Number of Cases" dropdown
+            $("#num-cases-select").on("change", function () {
+                // Update the "Select Cases" dropdown based on the filtered number of cases
+                updatePatientDropdown();
+            });
+
+            // On initial load, trigger the change event for the "Select Number of Cases" dropdown
+            // to set up the initial filtering of patients
+            $("#num-cases-select").trigger("change");
+
+        });
+
+
+        // Open the client form modal
+        function openClientModal() {
+            var clientModal = document.getElementById("myClientModal");
+            clientModal.style.display = "block";
+        }
+
+        // Close the client form modal
+        var closeClientModalButton = document.getElementById("closeClientModal");
+        closeClientModalButton.addEventListener("click", function() {
+            var clientModal = document.getElementById("myClientModal");
+            clientModal.style.display = "none";
+        });
+
+        // Event listener for the "Add New Client" button
+        var openClientButton = document.querySelector("#client-dropdown .plus-button");
+        openClientButton.addEventListener("click", function() {
+            openClientModal();
+        });
+
+        // Submit the client form data via AJAX
+        var submitClientButton = document.getElementById("submit-client");
+        submitClientButton.addEventListener("click", function() {
+            var clientFormData = {
+                name: document.getElementById("client-name").value,
+                email: document.getElementById("client-email").value,
+                password: document.getElementById("client-password").value,
+            };
+
+            // Get the CSRF token value
+            var csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+
+            // Use AJAX to send the form data to the server
+            $.ajax({
+                url: '{% url "allocate1" %}', // Update this URL to your endpoint
+                type: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                data: clientFormData, // Include the form data in the request
+                success: function(response) {
+                    // Handle the success response (if needed)
+                    console.log(response);
+                    closeClientModal();
+                    // Optionally show a success message
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle the error response (if needed)
+                    console.log(errmsg);
+                }
+            });
+
+            // Close the client modal
+            var clientModal = document.getElementById("myClientModal");
+            clientModal.style.display = "none";
+        });
+
+
+        // Open the city form modal
+        function openCityModal() {
+            var cityModal = document.getElementById("myCityModal");
+            cityModal.style.display = "block";
+        }
+
+        // Close the city form modal
+        function closeCityModal() {
+            var cityModal = document.getElementById("myCityModal");
+            cityModal.style.display = "none";
+        }
+
+        // Event listener for the "Add City" button
+        var openCityButton = document.querySelector("#city-dropdown .plus-button");
+        openCityButton.addEventListener("click", function() {
+            openCityModal();
+        });
+
+        // Event listener for the close button within the city modal
+        var closeCityModalButton = document.getElementById("closeCityModal");
+        closeCityModalButton.addEventListener("click", function() {
+            closeCityModal();
+        });
+
+
+        // Function to submit the city form
+        function submitCityForm() {
+            // Collect form data here
+            var formData = {
+                client: document.getElementById("client-select1").value,
+                city_name: document.getElementById("city-name").value,
+                csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            };
+
+
+            // Log the constructed URL to the console
+            var ajaxUrl = '{% url "allocate1" %}';
+            console.log("AJAX URL:", ajaxUrl);
+
+            // Send AJAX request to the server to add the city
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                    console.log(response);
+                    closeCityModal();
+                    // Optionally show a success message
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle error response
+                    console.log(errmsg);
+                }
+            });
+        }
+
+
+        // Open the location form modal
+        function openLocationModal() {
+            var locationModal = document.getElementById("myLocationModal");
+            locationModal.style.display = "block";
+        }
+
+        // Close the location form modal
+        function closeLocationModal() {
+            var locationModal = document.getElementById("myLocationModal");
+            locationModal.style.display = "none";
+        }
+
+        // Event listener for the "Add Location" button
+        var openLocationButton = document.querySelector("#location-dropdown .plus-button");
+        openLocationButton.addEventListener("click", function() {
+            openLocationModal();
+        });
+
+        // Event listener for the close button within the location modal
+        var closeLocationModalButton = document.getElementById("closeLocationModal");
+        closeLocationModalButton.addEventListener("click", function() {
+            closeLocationModal();
+        });
+
+
+        // Function to submit the location form
+        function submitLocationForm() {
+            // Collect form data here
+            var formData = {
+                city: document.getElementById("city-select1").value,
+                location_name: document.getElementById("location-name").value,
+                csrfmiddlewaretoken: document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            };
+
+            // Log the constructed URL to the console
+            var ajaxUrl = '{% url "allocate1" %}';
+            console.log("AJAX URL:", ajaxUrl);
+
+            // Send AJAX request to the server to add the location
+            $.ajax({
+                url: ajaxUrl,
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                    console.log(response);
+                    closeLocationModal();
+                    // Optionally show a success message
+                },
+                error: function(xhr, errmsg, err) {
+                    // Handle error response
+                    console.log(errmsg);
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

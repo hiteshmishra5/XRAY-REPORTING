@@ -1,6 +1,14 @@
-{% extends 'users/base.html' %}
+<!DOCTYPE html>
+<html>
+{% load tz %}
 {% load static %}
-{% block content %}
+
+<head>
+    <title>XRAi Allocation</title>
+    <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <style>
     /* Add your CSS styles here */
     .card {
@@ -18,6 +26,46 @@
 
     form {
       text-align: center; /* Center align the form content */
+    }
+    .navbar {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      z-index: 999;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      height: 3.8rem;
+      border-radius: 5px;
+    }
+
+    .navbar ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navbar ul li {
+      display: inline;
+      margin-right: 10px;
+
+    }
+
+    .navbar ul li a {
+      color: #fff;
+      text-decoration: none;
+      margin-top: 0px;
+      padding: 0px;
+    }
+
+    .logout-button {
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
     }
 
     textarea {
@@ -37,7 +85,6 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin-top: 10px;
     }
 
     a {
@@ -84,7 +131,27 @@
       cursor: pointer;
       display: inline-block;
     }
+    .top {
+      top-margin: 3px;
+    }
+
+
   </style>
+</head>
+  <nav class="navbar">
+    <ul>
+      <li>
+        <a class="top" href="/upload_dicom"><strong>XRAi Allocation</strong></a>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <a class="top" href="/logout"><button class="logout-button btn btn-sm">
+            <strong>Logout</strong>
+          </button></a>
+      </li>
+    </ul>
+  </nav>
 
   <div class="card">
     <h2>Upload DICOM Image</h2>
@@ -116,4 +183,4 @@
     }
   </script>
 
-{% endblock content %}
+

@@ -172,7 +172,6 @@ def allocate(request):
         password = request.POST.get("password")
 
         client = Client(
-            registration_type_id=3,
             name=name,
             email=email,
             password=password,

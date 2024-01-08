@@ -551,7 +551,7 @@
             <td>{{ patient.study_date }}</td>
             <td>
               <button class="openClinicalHistoryButton" data-clinical-history="{{ patient.notes }}">
-                Open
+                View
               </button>
             </td>
 
@@ -752,42 +752,7 @@
   </script>
 
   <script>
-    function callGoogleDrive() {
-      $.ajax({
-        type: "GET",
-        url: "/googledrive/",
-        success: function (response) {
-          console.log(response.message); // Handle the response from the server if needed
-        },
-        error: function () {
-          console.error("Failed to call GoogleDrive() function.");
-        },
-      });
-    }
-
-    function refreshPage() {
-      // Call GoogleDrive() before reloading the page
-      callGoogleDrive();
-
-      // Reload the page
-      location.reload();
-
-      // Show the popup message
-      var popup = document.getElementById("popup-message");
-      popup.style.display = "block";
-
-      // Hide the popup after a certain time (e.g., 3 seconds)
-      setTimeout(function () {
-        popup.style.display = "none";
-      }, 3000); // 3000 milliseconds = 3 seconds
-
-      // Reload the page after 5 minutes (300000 milliseconds)
-      setTimeout(function () {
-        location.reload();
-      }, 300000);
-    }
-
-    setInterval(refreshPage, 300000);
+     
 
     // Function to show/hide the scroll-to-top button based on the scroll position
     function toggleScrollToTopButton() {
@@ -898,7 +863,7 @@
   </script>
 
   <div class="footer">
-    <p>&copy; 2019-2023 XRAi Digital. All rights reserved.</p>
+    <p>&copy; 2019-2024 XRAi Digital. All rights reserved.</p>
   </div>
 </body>
 

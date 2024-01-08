@@ -419,7 +419,28 @@ class App extends Component {
   //   }
   // }
 
+  
+
+
   GetDivContentOnPDFWithoutImage() {
+
+    const showLoader = () => {
+      console.log('Showing loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'block';
+      }
+    };
+
+    const hideLoader = () => {
+      console.log('Hiding loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'none';
+      }
+    };
+    // Show the loader before starting the PDF generation
+    showLoader();
     var filename = this.createFilename();
     const data = document.getElementsByClassName("ck-editor__editable")[0];
     const table = data.querySelector("table");
@@ -434,6 +455,7 @@ class App extends Component {
     }
 
     if (data != undefined) {
+      
       var a4Width = 595.28; // A4 width in points (1 point = 1/72 inch)
       var a4Height = 841.89; // A4 height in points
 
@@ -454,6 +476,9 @@ class App extends Component {
           const lastImage = images[images.length - 1];
           lastImage.style.display = "block";
         }
+        
+        // Hide the loader when the PDF is ready
+        hideLoader();
 
         // Create PDF with only the captured content
         const pdf = new jsPDF("p", "pt", [a4Width, a4Height], true);
@@ -500,84 +525,29 @@ class App extends Component {
     }
   }
 
-  ////////////////////pdf try////////////////////
+ 
 
-  // GetDivContentOnPDF() {
-  //   var filename = this.createFilename();
-  //   const data = document.getElementsByClassName('ck-editor__editable')[0];
-  //   const table = data.querySelector('table');
-  //   data.classList.add("ck-blurred");
-  //   data.classList.remove("ck-focused");
-
-  //   if (data != undefined) {
-  //     // Create a new jsPDF instance
-  //     const pdf = new jsPDF('p', 'pt', [595.28, 841.89], true); // A4 dimensions
-
-  //     // Capture the entire content, including text and images
-  //     html2canvas(data, {
-  //       scale: 4, // Adjust the scale if needed for better image quality
-  //       useCORS: true, // Added to address potential CORS issues
-  //       logging: true, // Enable logging to identify potential issues
-  //     }).then((canvas) => {
-  //       // Calculate the position to center the image
-  //       const imgWidth = 595.28 - 40; // Adjusted width to leave some margin
-  //       const imgHeight = (imgWidth * 1.5) - 40; // Adjusted height to maintain aspect ratio and leave margin
-  //       const imgX = (595.28 - imgWidth) / 2;
-  //       const imgY = (841.89 - imgHeight) / 2;
-
-  //       // Resize canvas to match the captured content size
-  //       pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 595.28, 841.89);
-
-  //       // Calculate the position to place the text at the bottom
-  //       const textX = 40;
-  //       const textY = 841.89 - 2; // 20 points from the bottom
-
-  //       // If a table exists within the ck-editor__editable div, capture its text content
-  //       if (table) {
-  //         const tableText = table.textContent || '';
-
-  //         // Add the table text as text (preserve original formatting)
-  //         pdf.setFontSize(2); // Adjust the font size as needed
-  //         pdf.text(textX, textY, tableText);
-  //       }
-
-  //       // Iterate through all images in the ck-editor__editable div
-  //       const images = data.querySelectorAll('figure.image img');
-
-  //       images.forEach((image) => {
-  //         const maxWidth = 200; // Maximum width for the image
-  //         const maxHeight = 300; // Maximum height for the image
-
-  //         const imageSrc = image.src;
-  //         const img = new Image();
-  //         img.src = imageSrc;
-
-  //         img.onload = function () {
-  //           const originalWidth = img.width;
-  //           const originalHeight = img.height;
-
-  //           // Calculate the proportional resizing factor
-  //           const widthRatio = maxWidth / originalWidth;
-  //           const heightRatio = maxHeight / originalHeight;
-  //           const resizeFactor = Math.min(widthRatio, heightRatio);
-
-  //           // Calculate the new dimensions
-  //           const newWidth = originalWidth * resizeFactor;
-  //           const newHeight = originalHeight * resizeFactor;
-
-  //           // Add the resized image to the PDF
-  //           pdf.addImage(imageSrc, 'PNG', imgX, imgY + 100, newWidth, newHeight);
-  //         };
-  //       });
-
-  //       // Save the PDF
-  //       pdf.save(filename ? filename + ".pdf" : "download.pdf");
-  //     });
-  //   }
-  // }
+ 
 
   ////////////////////////////////// Another one upgraded on 05/01/2024 ////////////////////////
   GetDivContentOnPDF() {
+    const showLoader = () => {
+      console.log('Showing loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'block';
+      }
+    };
+
+    const hideLoader = () => {
+      console.log('Hiding loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'none';
+      }
+    };
+    // Show the loader before starting the PDF generation
+    showLoader();
     var filename = this.createFilename();
     const data = document.getElementsByClassName("ck-editor__editable")[0];
     const table = data.querySelector("table");
@@ -600,7 +570,9 @@ class App extends Component {
         const imgHeight = imgWidth * 1.5 - 40; // Adjusted height to maintain aspect ratio and leave margin
         const imgX = (595.28 - imgWidth) / 2;
         const imgY = (841.89 - imgHeight) / 2;
-
+        
+        // Hide the loader when the PDF is ready
+        hideLoader();
         // Add the image to the PDF
         pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth, imgHeight);
         pdf.setTextColor(255, 255, 255);
@@ -769,6 +741,23 @@ class App extends Component {
   // }
 
   GetEcgContentOnPDF() {
+    const showLoader = () => {
+      console.log('Showing loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'block';
+      }
+    };
+
+    const hideLoader = () => {
+      console.log('Hiding loader');
+      const loader = document.querySelector('.loader');
+      if (loader) {
+          loader.style.display = 'none';
+      }
+    };
+    // Show the loader before starting the PDF generation
+    showLoader();
     const filename = this.createFilename();
     const data = document.getElementsByClassName("ck-editor__editable")[0];
     const table = data.querySelector("table");
@@ -886,7 +875,8 @@ class App extends Component {
             pdf.setFontSize(2); // Adjust the font size as needed
             pdf.text(textX, textY - 2, paragraphText); // Place it above the table text
           });
-
+          // Hide the loader when the PDF is ready
+          hideLoader();
           // Save the PDF
           pdf.save(filename ? filename + ".pdf" : "download.pdf");
 

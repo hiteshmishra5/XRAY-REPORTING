@@ -328,43 +328,29 @@ class App extends Component {
   //Aman(searchfield for IDs)
 
   createFilename() {
-    //Aman
     const urlSearchParams = new URLSearchParams(window.location.search);
-    var patientName = document.querySelector(
+    const patientNameElement = document.querySelector(
       "#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(1) > td:nth-child(1) > span > strong"
-    )?.innerHTML;
-    var PatientId = document.querySelector(
+    );
+    const PatientIdElement = document.querySelector(
       "#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(1) > td:nth-child(2) > span > strong"
-    )?.innerHTML;
-    var location = urlSearchParams.get("data-location");
-    // TestType = document.querySelector("#root > div > div > div.document-editor__editable-container > div > p:nth-child(3) > strong > u")?.innerHTML;
-    //var formatDate = document.querySelector("#root > div > div > div.document-editor__editable-container > div > figure.table.ck-widget.ck-widget_with-selection-handle > table > tbody > tr:nth-child(2) > td:nth-child(2) > span > strong")?.innerHTML;
+    );
+    const patientName = patientNameElement?.innerHTML.trim();  // Trim extra spaces
+    const PatientId = PatientIdElement?.innerHTML.trim();  // Trim extra spaces
+    const location = urlSearchParams.get("data-location");
 
-    //var currentDate = new Date();
-    //var month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    //var date = currentDate.getDate();
-    //var formatDate = (date < 10 ?+"0" + date : date) + month[currentDate.getMonth()];
-    // var filename = [patientName, PatientId, TestType, formatDate];
-    // if (patientName == undefined || patientName == null || PatientId == undefined || TestType == undefined || PatientId == null || TestType == null) {
-    //   filename = ["Patient", "0", "Test", "Date"];
-    // }
-    var filename = [patientName, PatientId];
-    if (
-      patientName == undefined ||
-      patientName == null ||
-      PatientId == undefined
-    ) {
+    let filename;
+    if (!patientName || !PatientId) {
       filename = ["Patient", "0"];
     } else {
-      // filename = [PatientId.replace("Patient ID:", "").replace(" ", "_"), patientName.replace("Name: ", ""), TestType, formatDate.replace("Test date: ", "")];
       filename = [
         PatientId.replace("Patient ID:", "").replace(" ", "_"),
-        patientName.replace("Name:", ""),
+        patientName.replace("Name:", "").trim(),  // Trim extra spaces
         location,
       ];
     }
 
-    //return filename.join('_').toUpperCase();
+    // Rest of your code
     filename = filename.filter(Boolean).join("_").toUpperCase();
     filename = filename.replace(/^_/, ""); // Remove leading underscore if present
     return filename;
